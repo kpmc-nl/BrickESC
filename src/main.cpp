@@ -1,55 +1,27 @@
-//#include <avr/io.h>
-//#include <util/delay.h>
-//#include "Led.h"
-
-/**
- * \brief main loop
- */
-//int main(void) {
-//    Led led(&PORTB, &DDRB, PINB0);
-//
-//    while (1) {
-//        led.toggle();
-//        _delay_ms(500);
-//    }
-//}
-
 #include <avr/io.h>
 #include <util/delay.h>
+#include "output/PWMOut.h"
 
 
-int main(void)
-{
-    DDRB   |= (1 << PB0);                   // PWM output on PB0
-    TCCR0A = (1 << COM0A1) | (1 << WGM00);  // phase correct PWM mode
-    OCR0A  = 0x10;                          // initial PWM pulse width
+PWMOut pwm0(&TCCR0A, &TCCR0B, &OCR0A, &DDRB, PB0, COM0A0, COM0A1);
+PWMOut pwm1(&TCCR0A, &TCCR0B, &OCR0B, &DDRB, PB1, COM0B0, COM0B1);
 
-    TCCR0B = (1 << CS01);   // clock source = CLK/8, start PWM
+int main(void) {
 
 
-    uint8_t brightness;
+    uint8_t x;
+    while (1) {
 
-    
-    while(1)
-    {
-        // increasing brightness
-        for (brightness = 0; brightness < 255; ++brightness)
-        {
-            // set the brightness as duty cycle
-            OCR0A = brightness;
-
-            // delay so as to make the user "see" the change in brightness
-            _delay_ms(10);
+        for (x = 0; x < 255; x++) {
+            pwm0.write(x);
+            pwm1.write(255 - x);
+            _delay_ms(4);
         }
 
-        // decreasing brightness
-        for (brightness = 255; brightness > 0; --brightness)
-        {
-            // set the brightness as duty cycle
-            OCR0A = brightness;
-
-            // delay so as to make the user "see" the change in brightness
-            _delay_ms(10);
+        for (x = 255; x > 0; x--) {
+            pwm0.write(x);
+            pwm1.write(255 - x);
+            _delay_ms(4);
         }
 
     }

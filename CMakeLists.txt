@@ -11,8 +11,10 @@ include(cmake/avr-toolchain.cmake)
 
 
 set(SOURCE_FILES
-        # Add more source files if you need to.
         src/main.cpp
-        src/Led.cpp src/Led.h)
+        src/output/DOut.cpp src/output/DOut.h
+        src/output/PWMOut.cpp src/output/PWMOut.h
+
+        )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
