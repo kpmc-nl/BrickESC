@@ -24,9 +24,6 @@ int main(void) {
         if (pulse > 1450 && pulse < 1550) {
             pwm0.write(0);
             pwm1.write(0);
-
-            PORTB &= ~(1 << PB0);
-            PORTB &= ~(1 << PB1);
             continue;
         }
 
