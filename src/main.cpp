@@ -1,40 +1,44 @@
 #include <avr/io.h>
-#include <util/delay.h>
-#include <avr/interrupt.h>
+#include "clock/Clock.h"
 #include "output/PWMOut.h"
-#include "output/DOut.h"
+#include "input/RCInput.h"
 
 
 PWMOut pwm0(&TCCR0A, &TCCR0B, &OCR0A, &DDRB, PB0, COM0A0, COM0A1);
-DOut led1(&PORTB, &DDRB, PB1);
-//PWMOut pwm1(&TCCR0A, &TCCR0B, &OCR0B, &DDRB, PB1, COM0B0, COM0B1);
+PWMOut pwm1(&TCCR0A, &TCCR0B, &OCR0B, &DDRB, PB1, COM0B0, COM0B1);
+
+RCInput rcInput(&PORTB, &PINB, &DDRB, PB3, PCINT3);
+
+uint64_t pulse;
 
 int main(void) {
+    /* run at 8MHz */
+    CLKPR = 0x80; // set system clock to 8mhz with no prescale
+    CLKPR = 0x00; // these 2 CLKPR instructions have to be run together in order to set clock to 8 Mhz
 
-    cli();
-    GIMSK |= (1 << PCIE); // turns on pin change interrupts
-    PCMSK |= (1 << PCINT3); // turn on interrupts on pins PB2,
-    sei();
-
-    DDRB &= ~(1 << PB3); // PB3 as input
-    PORTB |= (1 << PB3); // internal pullup pb3
+    Clock::init();
 
 
-
-    uint8_t x;
     while (1) {
-        for (x = 0; x < 255; x++) {
-            pwm0.write(x);
-            _delay_ms(4);
+        pulse = rcInput.getPulse();
+
+        if (pulse > 1450 && pulse < 1550) {
+            pwm0.write(0);
+            pwm1.write(0);
+            continue;
         }
-        _delay_ms(1000);
+
+        if (pulse >= 1550) {
+            pwm0.write(0);
+            pwm1.write((pulse - 1550) * 255 / 450);
+            continue;
+        }
+
+        if (pulse <= 1450) {
+            pwm1.write(0);
+            pwm0.write((1450 - pulse) * 255 / 450);
+            continue;
+        }
     }
 }
 
-ISR(PCINT0_vect) {
-
-    if (!(PINB & (1 << PB3))) {
-        led1.toggle();
-    }
-
-}
