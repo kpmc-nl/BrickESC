@@ -28,7 +28,6 @@ void RCInput::init() {
     sei();
 
     *(ddr) &= ~(1 << read_pin); // read pin as input
-    *(port) &= ~(1 << read_pin); // pull down internally
 }
 
 uint64_t RCInput::getPulse() {
