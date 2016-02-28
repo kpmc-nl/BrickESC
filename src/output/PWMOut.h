@@ -24,7 +24,6 @@ private:
     // Output pin
     uint8_t pin;
 
-
 public:
 
     PWMOut(volatile uint8_t *tccra, volatile uint8_t *tccrb,
@@ -38,6 +37,10 @@ public:
 
 private:
     void init();
+
+    void attach();
+
+    void detach();
 };
 
 

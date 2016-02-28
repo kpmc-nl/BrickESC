@@ -20,7 +20,8 @@ void PWMOut::init() {
     /* Set WGM (Wave Form Generation Mode) to Fast PWM */
     *(tccra) |= (1 << WGM00) | (1 << WGM01);
 
-    /* Set COM (Compare Output Mode) to Non Inverted PWM */
+    attach();
+
     *(tccra) &= ~(1 << com00);
     *(tccra) |= (1 << com01);
 
@@ -29,6 +30,26 @@ void PWMOut::init() {
 }
 
 
+void PWMOut::attach() {
+    /* Set COM (Compare Output Mode) to Non Inverted PWM */
+    *(tccra) &= ~(1 << com00);
+    *(tccra) |= (1 << com01);
+
+}
+
+void PWMOut::detach() {
+    *(tccra) &= ~(1 << com00);
+    *(tccra) &= ~(1 << com01);
+}
+
 void PWMOut::write(uint8_t value) {
-    *(ocr) = value;
+
+    if (value == 0) {
+        detach();
+    } else {
+        attach();
+        *(ocr) = value;
+    }
+
+
 }
