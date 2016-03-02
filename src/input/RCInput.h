@@ -8,7 +8,10 @@
 
 #include <stdint.h>
 
-
+/**
+ * Defines a way to read a pulse from an RC receiver.
+ * see: https://en.wikipedia.org/wiki/Servo_control
+ */
 class RCInput {
 
 private:
@@ -24,6 +27,7 @@ private:
     volatile uint64_t pulse_length;
 
     class RCInput *next;
+
     static RCInput *first;
 
 public:
@@ -37,6 +41,7 @@ public:
 
 private:
     void readInterrupt();
+
     void init();
 
 };

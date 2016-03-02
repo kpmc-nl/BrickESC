@@ -1,3 +1,7 @@
+/**
+ * Firmware for an RC speed controller using an off-the-shelf L298N Dual H-Bridge Motor Controller
+ */
+
 #include <avr/io.h>
 #include "clock/Clock.h"
 #include "output/PWMOut.h"
@@ -16,8 +20,11 @@ int main(void) {
     CLKPR = 0x80; // set system clock to 8mhz with no prescale
     CLKPR = 0x00; // these 2 CLKPR instructions have to be run together in order to set clock to 8 Mhz
 
+
+
     Clock::init();
 
+    /* Proof of concept implementation! */
     while (1) {
         pulse = rcInput.getPulse();
 
@@ -40,4 +47,3 @@ int main(void) {
         }
     }
 }
-

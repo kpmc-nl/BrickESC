@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 /**
- *  Wrapper around digital output.
+ *  Wrapper around digital output. (HIGH/LOW)
  */
 class DOut {
 

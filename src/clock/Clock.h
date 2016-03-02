@@ -10,6 +10,9 @@
 
 #include <stdint.h>
 
+/**
+ * Defines a way to keep time using one of the built in timers of the AVR chip.
+ */
 class Clock {
 
 public:
