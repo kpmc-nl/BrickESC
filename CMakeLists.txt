@@ -14,7 +14,7 @@ include_directories(src)
 
 set(SOURCE_FILES
         # To switch between firmware types, enable one of the following
-        src/relais_fet.cpp
+        src/relay_fet.cpp
         # src/dual_hbridge.cpp
 
         # shared sources

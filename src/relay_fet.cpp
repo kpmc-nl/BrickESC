@@ -1,5 +1,5 @@
 /**
- * Firmware for an RC speed controller with a circuit based on some FETs and some relais.
+ * Firmware for an RC speed controller with a circuit based on some FETs and two relays
  */
 
 #include <avr/io.h>
@@ -11,7 +11,7 @@
 
 PWMOut fet(&TCCR0A, &TCCR0B, &OCR0A, &DDRB, PB0, COM0A0, COM0A1);
 RCInput rcInput(&PORTB, &PINB, &DDRB, PB2, PCINT2);
-DOut relais(&PORTB, &DDRB, PB1);
+DOut relay(&PORTB, &DDRB, PB1);
 
 uint64_t pulse;
 
@@ -33,13 +33,13 @@ int main(void) {
         }
 
         if (pulse >= 1600) {
-            relais.low();
+            relay.low();
             fet.write((pulse - 1600) * 255 / 400);
             continue;
         }
 
         if (pulse <= 1400) {
-            relais.high();
+            relay.high();
             fet.write((1400 - pulse) * 255 / 400);
             continue;
         }
