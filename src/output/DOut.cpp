@@ -6,9 +6,6 @@ DOut::DOut(volatile uint8_t *PORT, volatile uint8_t *DDR, uint8_t PIN)
     *(ddr) |= (1 << pin);
 }
 
-DOut::~DOut() {
-}
-
 void DOut::high(void) {
     *(port) |= (1 << pin);
 }

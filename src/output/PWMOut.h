@@ -31,8 +31,6 @@ public:
            uint8_t pin, uint8_t com00, uint8_t com01
     );
 
-    ~PWMOut();
-
     void write(uint8_t value);
 
 private:

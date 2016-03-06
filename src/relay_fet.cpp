@@ -30,7 +30,7 @@ typedef struct {
 // settings in eeprom
 Settings EEMEM EESettings;
 // settings in ram
-Settings settings;
+Settings settings = {1000, 2000};
 
 /* used for mapping input pulse to output pulse */
 uint64_t lowDiff;
@@ -113,7 +113,7 @@ int main(void) {
     while (1) {
 
 #ifdef SLOW_RESPONSE_MODE
-        if (Clock::millis() - update < 4) {
+        if (Clock::millis() - update < 3) {
             continue;
         }
         update = Clock::millis();

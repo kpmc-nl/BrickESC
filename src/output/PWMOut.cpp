@@ -8,10 +8,6 @@ PWMOut::PWMOut(volatile uint8_t *tccra, volatile uint8_t *tccrb,
     init();
 }
 
-PWMOut::~PWMOut() {
-
-}
-
 void PWMOut::init() {
 
     /* Set output pin direction */

@@ -17,14 +17,9 @@ RCInput::RCInput(volatile uint8_t *port, volatile uint8_t *pin_reg, volatile uin
         : port(port), pin_reg(pin_reg), ddr(ddr),
           read_pin(read_pin), int_pin(int_pin),
           next(0),
-          pulse_start(0), pulse_length(0) {
+          pulse_start(0), pulse_end(0) {
     next = first;
     first = this;
-    pulse_length = NEUTRAL_PULSE;
-    init();
-}
-
-void RCInput::init() {
 
     cli();
     GIMSK |= (1 << PCIE); // turns on pin change interrupts
@@ -33,6 +28,7 @@ void RCInput::init() {
 
     *(ddr) &= ~(1 << read_pin); // read pin as input
 }
+
 
 uint64_t RCInput::getPulse() {
     if (Clock::micros() - pulse_start > 100000) {
@@ -51,15 +47,24 @@ uint64_t RCInput::getPulse() {
 void RCInput::readInterrupt() {
 
     uint8_t state = *(pin_reg) & (1 << read_pin);
+    uint64_t now = Clock::micros();
 
     if (state != prev_state) {
 
         if (state) {
             // pin is high
-            pulse_start = Clock::micros();
+            uint64_t low_time = now - pulse_end;
+            /* Verify that the input is low for a period between 10 and 40 ms.
+             * If not, it is not a valid RC PWM signal. If the signal is not valid,
+             * the getPulse method will eventually notice, because the pulse_start
+             * value will not be updated anymore. */
+            if (low_time > 10000 && low_time < 40000) {
+                pulse_length = pulse_end - pulse_start;
+                pulse_start = now;
+            }
         } else {
             // pin is low
-            pulse_length = Clock::micros() - pulse_start;
+            pulse_end = now;
         }
         prev_state = state;
     }

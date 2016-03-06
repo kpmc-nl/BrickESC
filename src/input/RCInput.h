@@ -24,6 +24,7 @@ private:
     uint8_t prev_state;
 
     volatile uint64_t pulse_start;
+    volatile uint64_t pulse_end;
     volatile uint64_t pulse_length;
 
     class RCInput *next;
@@ -41,8 +42,6 @@ public:
 
 private:
     void readInterrupt();
-
-    void init();
 
 };
 
