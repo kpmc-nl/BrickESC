@@ -9,6 +9,7 @@ set(AVR_FCPU "8000000")
 include(cmake/avr-toolchain.cmake)
 
 add_definitions(-DENABLE_CLOCK)
+add_definitions(-DSLOW_RESPONSE_MODE)
 
 include_directories(src)
 

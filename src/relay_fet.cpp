@@ -37,7 +37,9 @@ uint64_t lowDiff;
 uint64_t highDiff;
 
 /* the current input pulse */
-uint64_t pulse;
+uint64_t pulse = 1500;
+
+uint64_t update;
 
 
 int main(void) {
@@ -109,8 +111,21 @@ int main(void) {
 
     /* if everything is initialized, run the actual ESC logic */
     while (1) {
-        pulse = rcInput.getPulse();
 
+#ifdef SLOW_RESPONSE_MODE
+        if (Clock::millis() - update < 4) {
+            continue;
+        }
+        update = Clock::millis();
+
+        if (rcInput.getPulse() > pulse) {
+            pulse++;
+        } else if (rcInput.getPulse() < pulse) {
+            pulse--;
+        }
+#else
+        pulse = rcInput.getPulse();
+#endif
         if (pulse > LOW_THRESH && pulse < HIGH_THRESH) {
             fet.write(0);
             led1.high();
@@ -134,6 +149,7 @@ int main(void) {
             fet.write((LOW_THRESH - pulse) * 255 / lowDiff);
             continue;
         }
+
     }
 }
 

@@ -7,5 +7,5 @@ This repository contains the source code for our custom speed controllers. More 
 - [x] Read receiver signal
 - [x] Proof of concept
 - [ ] Verify RC Input signal, eg verify there is a 17.5-19.5ms time the pin is low
-- [ ] Slow down motor response, to prevent magic smoke from exiting the FETs
+- [x] Slow down motor response, to prevent magic smoke from exiting the FETs
 - [x] Make min/max pulse length user-configurable.
