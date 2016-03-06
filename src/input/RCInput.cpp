@@ -6,6 +6,9 @@
 #include "RCInput.h"
 #include "clock/Clock.h"
 
+#define NEUTRAL_PULSE 1500
+#define MAX_PULSE 2500
+#define MIN_PULSE 500
 
 RCInput *RCInput::first;
 
@@ -17,6 +20,7 @@ RCInput::RCInput(volatile uint8_t *port, volatile uint8_t *pin_reg, volatile uin
           pulse_start(0), pulse_length(0) {
     next = first;
     first = this;
+    pulse_length = NEUTRAL_PULSE;
     init();
 }
 
@@ -33,12 +37,12 @@ void RCInput::init() {
 uint64_t RCInput::getPulse() {
     if (Clock::micros() - pulse_start > 100000) {
         // if we didn't get an update for 100ms, suspect receiver disconnect.
-        return 1500;
+        return NEUTRAL_PULSE;
     }
-    if (pulse_length < 1000) {
-        return 1000;
-    } else if (pulse_length > 2000) {
-        return 2000;
+    if (pulse_length < MIN_PULSE) {
+        return MIN_PULSE;
+    } else if (pulse_length > MAX_PULSE) {
+        return MAX_PULSE;
     } else {
         return pulse_length;
     }

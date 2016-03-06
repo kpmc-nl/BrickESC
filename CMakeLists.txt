@@ -2,7 +2,7 @@ project(speed-controller)
 
 cmake_minimum_required(VERSION 2.6)
 
-set(AVRDUDE_PROGRAMMER_FLAGS -cstk500v1 -P/dev/cu.usbmodem1411 -b19200)
+set(AVRDUDE_PROGRAMMER_FLAGS -cstk500v1 -P/dev/cu.usbmodem1421 -b19200)
 set(AVR_MCU "attiny45")
 set(AVR_FCPU "8000000")
 
