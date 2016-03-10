@@ -21,10 +21,8 @@ RCInput::RCInput(volatile uint8_t *port, volatile uint8_t *pin_reg, volatile uin
     next = first;
     first = this;
 
-    cli();
     GIMSK |= (1 << PCIE); // turns on pin change interrupts
     PCMSK |= (1 << int_pin); // turn on interrupts on specified pin.
-    sei();
 
     *(ddr) &= ~(1 << read_pin); // read pin as input
 }
