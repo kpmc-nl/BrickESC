@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 /**
- * Defines a way to keep time using one of the built in timers of the AVR chip.
+ * Defines a way to keep time using one of the built in timers (timer1) of the ATTiny.
  */
 class Clock {
 

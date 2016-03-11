@@ -6,48 +6,48 @@
 #include "Clock.h"
 
 #ifdef ENABLE_CLOCK
-static volatile uint64_t _millis = 0;
-static volatile uint16_t _1000us = 0;
+
+static volatile uint64_t overflow_count = 0;
 
 ISR(TIM1_OVF_vect) {
-#if F_CPU >= 16000000L
-    // At 16MHz, timer overflow happens every 0.016ms
-        _1000us += 16;
-#elif F_CPU >= 8000000L
-    // At 8MHz, timer overflow happens every 0.032ms
-    _1000us += 32;
-#elif F_CPU >= 1000000L
-    // At 1MHz, timer overflow happens every 0.256ms
-_1000us += 32;
-#endif
-    while (_1000us > 1000) {
-        _millis++;
-        _1000us -= 1000;
-    }
+    overflow_count++;
 }
 
 void Clock::init() {
-    /* interrup setup */
-    TCCR1 |= (1 << CS00); // no prescaling; ie timer overflow interrupt every 32us
+
+
+
+
+    /* configure timer so it will update the counter every 1us.
+     * 1MHz and 8MHZ clock frequencies are ideal for this :)
+     * Timer overflow will now happen every 256us. */
+#if F_CPU == 1000000L
+    TCCR1 |= (1 << CS10); // no prescaling
+#elif F_CPU == 8000000L
+    TCCR1 |= (1 << CS12); // 1/8th prescaling
+#else
+#error "Unsupported CPU frequency"
+#endif
+
+
     // enable timer overflow interrupt for timer 1
     TIMSK |= 1 << TOIE1;
+
+    TCNT1 = 0;
 }
 
 uint64_t Clock::millis() {
-    uint64_t m;
-    cli();
-    m = _millis;
-    sei();
-    return m;
+    /* TODO: there might be a better way to do this. For now it will do. */
+    return micros() / 1000;
 }
 
 uint64_t Clock::micros() {
-    uint64_t m;
+    uint64_t count;
     cli();
-    m = 1000 * _millis;
-    m += _1000us;
+    count = overflow_count;
     sei();
-    return m;
+    /* Bit shift 8 to the left is the same as multiplication by 256, but I suppose this is faster. */
+    return (count * 256) + TCNT1;
 }
 
 #endif

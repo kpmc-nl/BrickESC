@@ -1,19 +1,20 @@
+#include <avr/io.h>
 #include "DOut.h"
 
-DOut::DOut(volatile uint8_t *PORT, volatile uint8_t *DDR, uint8_t PIN)
-        : port(PORT), ddr(DDR), pin(PIN) {
+DOut::DOut(uint8_t pin)
+        : pin(pin) {
     /* Set output pin direction */
-    *(ddr) |= (1 << pin);
+    DDRB |= (1 << pin);
 }
 
 void DOut::high(void) {
-    *(port) |= (1 << pin);
+    PORTB |= (1 << pin);
 }
 
 void DOut::low(void) {
-    *(port) &= ~(1 << pin);
+    PORTB &= ~(1 << pin);
 }
 
 void DOut::toggle(void) {
-    *(port) ^= (1 << pin);
+    PORTB ^= (1 << pin);
 }
