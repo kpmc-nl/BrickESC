@@ -102,7 +102,7 @@ void Controller::update() {
         pulse--;
     }
 #else
-    pulse = rcInput.getPulse();
+    pulse = rcInput->getPulse();
 #endif
 
     if (pulse >= settings.maxPulse) {
