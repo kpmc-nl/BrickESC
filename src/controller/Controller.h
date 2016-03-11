@@ -41,7 +41,9 @@ private:
     /* the current input pulse */
     uint64_t pulse;
 
+#ifdef SLOW_RESPONSE_MODE
     uint64_t updateTime;
+#endif
 
 public:
 
@@ -56,6 +58,18 @@ public:
     uint64_t getHighDiff();
 
     uint64_t getPulse();
+
+private:
+
+    void setupMode();
+
+    void writeSettings();
+
+    void readSettings();
+
+    void validateSettings();
+
+    void waitForNeutral();
 
 };
 

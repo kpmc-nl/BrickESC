@@ -9,16 +9,11 @@
 class DOut {
 
 private:
-
-    //  pointer to the output port
-    volatile uint8_t *port;
-    //  pointer to the output port's data direction register
-    volatile uint8_t *ddr;
     //  pin the output is connected to
     uint8_t pin;
 
 public:
-    DOut(volatile uint8_t *PORT, volatile uint8_t *DDR, uint8_t PIN);
+    DOut(uint8_t PIN);
 
     void high(void);
 

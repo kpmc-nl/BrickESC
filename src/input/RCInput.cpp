@@ -12,23 +12,20 @@
 
 RCInput *RCInput::first;
 
-RCInput::RCInput(volatile uint8_t *port, volatile uint8_t *pin_reg, volatile uint8_t *ddr,
-                 uint8_t read_pin, uint8_t int_pin)
-        : port(port), pin_reg(pin_reg), ddr(ddr),
-          read_pin(read_pin), int_pin(int_pin),
+RCInput::RCInput(uint8_t pin)
+        : pin(pin),
           next(0),
           pulse_start(0), pulse_end(0) {
     next = first;
     first = this;
 
     GIMSK |= (1 << PCIE); // turns on pin change interrupts
-    PCMSK |= (1 << int_pin); // turn on interrupts on specified pin.
-
-    *(ddr) &= ~(1 << read_pin); // read pin as input
+    PCMSK |= (1 << pin); // turn on interrupts on specified pin.
+    DDRB &= ~(1 << pin); // read pin as input
 }
 
 
-uint64_t RCInput::getPulse() {
+uint32_t RCInput::getPulse() {
     if (Clock::micros() - pulse_start > 100000) {
         // if we didn't get an update for 100ms, suspect receiver disconnect.
         return NEUTRAL_PULSE;
@@ -44,7 +41,7 @@ uint64_t RCInput::getPulse() {
 
 void RCInput::readInterrupt() {
 
-    uint8_t state = *(pin_reg) & (1 << read_pin);
+    uint8_t state = PINB & (1 << pin);
     uint64_t now = Clock::micros();
 
     if (state != prev_state) {
@@ -58,6 +55,7 @@ void RCInput::readInterrupt() {
              * value will not be updated anymore. */
             if (low_time > 10000 && low_time < 40000) {
                 pulse_length = pulse_end - pulse_start;
+//                pulse_length = pulse_length / 2 + (pulse_end - pulse_start) / 2;
                 pulse_start = now;
             }
         } else {

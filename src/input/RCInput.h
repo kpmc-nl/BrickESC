@@ -15,28 +15,23 @@
 class RCInput {
 
 private:
-    volatile uint8_t *port;
-    volatile uint8_t *ddr;
-    volatile uint8_t *pin_reg;
-    uint8_t read_pin;
-    uint8_t int_pin;
+    uint8_t pin;
 
     uint8_t prev_state;
 
     volatile uint64_t pulse_start;
     volatile uint64_t pulse_end;
-    volatile uint64_t pulse_length;
+    volatile uint32_t pulse_length;
 
     class RCInput *next;
 
     static RCInput *first;
 
 public:
-    RCInput(volatile uint8_t *port, volatile uint8_t *pin_reg, volatile uint8_t *ddr, uint8_t read_pin,
-            uint8_t int_pin);
+    RCInput(uint8_t pin);
 
 
-    uint64_t getPulse();
+    uint32_t getPulse();
 
     static void handleInterrupts();
 
