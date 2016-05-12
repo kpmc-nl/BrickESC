@@ -5,6 +5,7 @@
 #include <avr/interrupt.h>
 #include "RCInput.h"
 #include "clock/Clock.h"
+#include "util/Util.h"
 
 #define NEUTRAL_PULSE 1500
 #define MAX_PULSE 2500
@@ -15,27 +16,36 @@ RCInput *RCInput::first;
 RCInput::RCInput(uint8_t pin)
         : pin(pin),
           next(0),
-          pulse_start(0), pulse_end(0) {
+          last_pulse_start(0), last_pulse_end(0) {
     next = first;
     first = this;
 
     GIMSK |= (1 << PCIE); // turns on pin change interrupts
     PCMSK |= (1 << pin); // turn on interrupts on specified pin.
     DDRB &= ~(1 << pin); // read pin as input
+
+
+    for (uint8_t i = 0; i < SAMPLE_SIZE; i++) {
+        pulse_length_sample[i] = NEUTRAL_PULSE;
+    }
+
 }
 
 
 uint32_t RCInput::getPulse() {
-    if (Clock::micros() - pulse_start > 100000) {
+    if (Clock::micros() - last_pulse_start > 100000) {
         // if we didn't get an update for 100ms, suspect receiver disconnect.
         return NEUTRAL_PULSE;
     }
-    if (pulse_length < MIN_PULSE) {
+
+    uint32_t result = Util::median(pulse_length_sample, SAMPLE_SIZE);
+
+    if (result < MIN_PULSE) {
         return MIN_PULSE;
-    } else if (pulse_length > MAX_PULSE) {
+    } else if (result > MAX_PULSE) {
         return MAX_PULSE;
     } else {
-        return pulse_length;
+        return result;
     }
 }
 
@@ -48,19 +58,22 @@ void RCInput::readInterrupt() {
 
         if (state) {
             // pin is high
-            uint64_t low_time = now - pulse_end;
+            uint64_t low_time = now - last_pulse_end;
             /* Verify that the input is low for a period between 10 and 40 ms.
              * If not, it is not a valid RC PWM signal. If the signal is not valid,
              * the getPulse method will eventually notice, because the pulse_start
              * value will not be updated anymore. */
             if (low_time > 10000 && low_time < 40000) {
-                pulse_length = pulse_end - pulse_start;
-//                pulse_length = pulse_length / 2 + (pulse_end - pulse_start) / 2;
-                pulse_start = now;
+                if (sample_counter == SAMPLE_SIZE) {
+                    sample_counter = 0;
+                }
+                pulse_length_sample[sample_counter] = last_pulse_end - last_pulse_start;
+                last_pulse_start = now;
+                sample_counter++;
             }
         } else {
             // pin is low
-            pulse_end = now;
+            last_pulse_end = now;
         }
         prev_state = state;
     }

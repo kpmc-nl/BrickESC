@@ -3,13 +3,13 @@ project(speed-controller)
 cmake_minimum_required(VERSION 2.6)
 
 set(AVRDUDE_PROGRAMMER_FLAGS -cstk500v1 -P/dev/cu.usbmodem1421 -b19200)
-set(AVR_MCU "attiny45")
+set(AVR_MCU "attiny85")
 set(AVR_FCPU "8000000")
 
 include(cmake/avr-toolchain.cmake)
 
 add_definitions(-DENABLE_CLOCK)
-add_definitions(-DSLOW_RESPONSE_MODE)
+#add_definitions(-DSLOW_RESPONSE_MODE)
 
 include_directories(src)
 
@@ -23,7 +23,7 @@ set(SOURCE_FILES
         src/output/PWMOut.cpp src/output/PWMOut.h
         src/clock/Clock.cpp src/clock/Clock.h
         src/input/RCInput.cpp src/input/RCInput.h
-        src/controller/Controller.cpp src/controller/Controller.h)
+        src/controller/Controller.cpp src/controller/Controller.h src/Util/Util.cpp src/Util/Util.h)
 
 add_executable(${CMAKE_PROJECT_NAME}
 

@@ -73,13 +73,17 @@ void Controller::waitForNeutral() {
 
 void Controller::init() {
 
-    if (rcInput->getPulse() > HIGH_THRESH) {
-        /* run setup mode if controller is turned on while the signal is high */
-        setupMode();
-        writeSettings();
-    } else {
-        readSettings();
-    }
+//    if (rcInput->getPulse() > HIGH_THRESH) {
+//        /* run setup mode if controller is turned on while the signal is high */
+//        setupMode();
+//        writeSettings();
+//    } else {
+//        readSettings();
+//    }
+
+    settings.minPulse = 1000;
+    settings.maxPulse = 2000;
+    writeSettings();
 
     /* initialize our runtime settings */
     highDiff = settings.maxPulse - HIGH_THRESH;
