@@ -5,8 +5,6 @@
 #ifndef HBRIDGE_DRIVER_CLOCK_H
 #define HBRIDGE_DRIVER_CLOCK_H
 
-/* Clock class should be enabled explicitly as it claims a timer which might be needed for other purposes. */
-#ifdef ENABLE_CLOCK
 
 #include <stdint.h>
 
@@ -24,7 +22,5 @@ public:
     static uint64_t micros();
 
 };
-
-#endif
 
 #endif //HBRIDGE_DRIVER_CLOCK_H

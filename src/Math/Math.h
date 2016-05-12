@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-class Util {
+class Math {
 
 public:
     static uint64_t median(uint32_t *input, uint32_t array_size);

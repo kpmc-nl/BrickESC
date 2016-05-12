@@ -5,7 +5,7 @@
 #include <avr/interrupt.h>
 #include "RCInput.h"
 #include "clock/Clock.h"
-#include "util/Util.h"
+#include "Math/Math.h"
 
 #define NEUTRAL_PULSE 1500
 #define MAX_PULSE 2500
@@ -25,7 +25,7 @@ RCInput::RCInput(uint8_t pin)
     DDRB &= ~(1 << pin); // read pin as input
 
 
-    for (uint8_t i = 0; i < SAMPLE_SIZE; i++) {
+    for (uint8_t i = 0; i < RC_SAMPLE_SIZE; i++) {
         pulse_length_sample[i] = NEUTRAL_PULSE;
     }
 
@@ -38,7 +38,7 @@ uint32_t RCInput::getPulse() {
         return NEUTRAL_PULSE;
     }
 
-    uint32_t result = Util::median(pulse_length_sample, SAMPLE_SIZE);
+    uint32_t result = Math::median(pulse_length_sample, RC_SAMPLE_SIZE);
 
     if (result < MIN_PULSE) {
         return MIN_PULSE;
@@ -64,12 +64,12 @@ void RCInput::readInterrupt() {
              * the getPulse method will eventually notice, because the pulse_start
              * value will not be updated anymore. */
             if (low_time > 10000 && low_time < 40000) {
-                if (sample_counter == SAMPLE_SIZE) {
+                if (sample_counter == RC_SAMPLE_SIZE) {
                     sample_counter = 0;
                 }
                 pulse_length_sample[sample_counter] = last_pulse_end - last_pulse_start;
                 last_pulse_start = now;
-                sample_counter++;
+                ++sample_counter;
             }
         } else {
             // pin is low

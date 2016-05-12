@@ -13,6 +13,7 @@
 #define LOW_THRESH 1420
 #define HIGH_THRESH 1580
 #define NEUTRAL 1500
+#define OUTER_THRESH 20;
 
 
 typedef struct {
@@ -40,10 +41,6 @@ private:
 
     /* the current input pulse */
     uint64_t pulse;
-
-#ifdef SLOW_RESPONSE_MODE
-    uint64_t updateTime;
-#endif
 
 public:
 

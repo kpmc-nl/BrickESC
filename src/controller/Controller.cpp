@@ -3,7 +3,6 @@
 //
 
 #include <util/delay.h>
-#include <clock/Clock.h>
 #include "Controller.h"
 
 Controller::Controller(RCInput *rcInput, DOut *led0, DOut *led1)
@@ -21,7 +20,7 @@ void Controller::setupMode() {
     }
 
     /* read max pulse, assuming the user gives max input */
-    settings.maxPulse = rcInput->getPulse();
+    settings.maxPulse = rcInput->getPulse() - OUTER_THRESH;
     led0->high();
 
     /* wait for low pulse */
@@ -30,7 +29,7 @@ void Controller::setupMode() {
     }
     _delay_ms(500);
     /* read low pulse, assuming the user gives min input */
-    settings.minPulse = rcInput->getPulse();
+    settings.minPulse = rcInput->getPulse() + OUTER_THRESH;
     led1->high();
 }
 
@@ -72,17 +71,15 @@ void Controller::waitForNeutral() {
 }
 
 void Controller::init() {
+    _delay_ms(500);
+    if (rcInput->getPulse() > HIGH_THRESH) {
+        /* run setup mode if controller is turned on while the signal is high */
+        setupMode();
+        writeSettings();
+    } else {
+        readSettings();
+    }
 
-//    if (rcInput->getPulse() > HIGH_THRESH) {
-//        /* run setup mode if controller is turned on while the signal is high */
-//        setupMode();
-//        writeSettings();
-//    } else {
-//        readSettings();
-//    }
-
-    settings.minPulse = 1000;
-    settings.maxPulse = 2000;
     writeSettings();
 
     /* initialize our runtime settings */
@@ -94,11 +91,13 @@ void Controller::init() {
 }
 
 void Controller::update() {
-#ifdef SLOW_RESPONSE_MODE
-    if (Clock::millis() - updateTime < 3) {
+#ifdef LOOPTIME
+    uint32_t read_pulse = rcInput->getPulse();
+
+    if ((read_pulse <= LOW_THRESH && pulse > NEUTRAL) || (read_pulse >= HIGH_THRESH && pulse < NEUTRAL)) {
+        pulse = NEUTRAL;
         return;
     }
-    updateTime = Clock::millis();
 
     if (rcInput->getPulse() > pulse) {
         pulse++;

@@ -8,24 +8,23 @@ set(AVR_FCPU "8000000")
 
 include(cmake/avr-toolchain.cmake)
 
-add_definitions(-DENABLE_CLOCK)
-#add_definitions(-DSLOW_RESPONSE_MODE)
+add_definitions(-DLOOPTIME=3000) #microseconds
+add_definitions(-DRC_SAMPLE_SIZE=11)
 
 include_directories(src)
 
 set(SOURCE_FILES
         # To switch between firmware types, enable one of the following
         src/relay_fet.cpp
-#         src/dual_hbridge.cpp
+        # src/dual_hbridge.cpp
 
         # shared sources
         src/output/DOut.cpp src/output/DOut.h
         src/output/PWMOut.cpp src/output/PWMOut.h
         src/clock/Clock.cpp src/clock/Clock.h
         src/input/RCInput.cpp src/input/RCInput.h
-        src/controller/Controller.cpp src/controller/Controller.h src/Util/Util.cpp src/Util/Util.h)
-
-add_executable(${CMAKE_PROJECT_NAME}
-
-        ${SOURCE_FILES}
+        src/controller/Controller.cpp src/controller/Controller.h
+        src/Math/Math.cpp src/Math/Math.h
         )
+
+add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})

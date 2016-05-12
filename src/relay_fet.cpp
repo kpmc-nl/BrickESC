@@ -9,7 +9,6 @@
 #include <util/delay.h>
 #include "clock/Clock.h"
 
-//
 static PWMOut fet(&OCR0A, PB0, COM0A0, COM0A1);
 static RCInput rcInput(PB2);
 
@@ -19,9 +18,6 @@ static DOut led1(PB4);
 
 static Controller controller(&rcInput, &led0, &led1);
 
-
-uint64_t time = 0;
-uint64_t prev = 0;
 
 int main(void) {
     /* run at 8MHz */
@@ -40,6 +36,9 @@ int main(void) {
 
     /* if everything is initialized, run the actual ESC logic */
     while (1) {
+#ifdef LOOPTIME
+        _delay_us(LOOPTIME);
+#endif
 
         controller.update();
 

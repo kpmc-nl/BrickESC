@@ -2,10 +2,10 @@
 // Created by Matthijs Oosterhoff on 12/05/16.
 //
 
-#include "Util.h"
+#include "Math.h"
 
 
-uint64_t Util::median(uint32_t *input, uint32_t array_size) {
+uint64_t Math::median(uint32_t *input, uint32_t array_size) {
 
     uint32_t sorted[array_size];
     for (int i = 0; i < array_size; ++i) {

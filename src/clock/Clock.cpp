@@ -5,7 +5,6 @@
 #include <avr/interrupt.h>
 #include "Clock.h"
 
-#ifdef ENABLE_CLOCK
 
 static volatile uint64_t overflow_count = 0;
 
@@ -46,8 +45,5 @@ uint64_t Clock::micros() {
     cli();
     count = overflow_count;
     sei();
-    /* Bit shift 8 to the left is the same as multiplication by 256, but I suppose this is faster. */
     return (count * 256) + TCNT1;
 }
-
-#endif
