@@ -19,9 +19,10 @@ private:
 
     uint8_t prev_state;
 
-    volatile uint64_t pulse_start;
-    volatile uint64_t pulse_end;
-    volatile uint32_t pulse_length;
+    uint64_t last_pulse_start;
+    uint64_t last_pulse_end;
+    uint32_t pulse_length_sample[RC_SAMPLE_SIZE];
+    uint8_t sample_counter;
 
     class RCInput *next;
 

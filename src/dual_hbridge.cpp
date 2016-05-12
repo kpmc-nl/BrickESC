@@ -39,6 +39,9 @@ int main(void) {
 
     /* if everything is initialized, run the actual ESC logic */
     while (1) {
+#ifdef LOOPTIME
+        _delay_us(LOOPTIME);
+#endif
 
         controller.update();
 
