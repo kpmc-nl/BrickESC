@@ -5,6 +5,7 @@
 #include <wiring.h>
 #include "RCInput.h"
 #include "util.h"
+#include "Controller.h"
 
 static uint64_t pulse_length_sample[RC_SAMPLE_SIZE];
 static uint64_t prev_time = 0;

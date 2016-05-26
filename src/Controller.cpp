@@ -31,8 +31,8 @@ void Controller::loop() {
     delayMicroseconds(LOOPTIME);
     uint64_t pulse = getCurrentRcInput();
 
-    if ((pulse <= LOW_THRESH && target_pulse > NEUTRAL) || (pulse >= HIGH_THRESH && target_pulse < NEUTRAL)) {
-        target_pulse = NEUTRAL;
+    if ((pulse <= RC_PWM_LOW_THRESH && target_pulse > RC_PWM_NEUTRAL) || (pulse >= RC_PWM_HIGH_THRESH && target_pulse < RC_PWM_NEUTRAL)) {
+        target_pulse = RC_PWM_NEUTRAL;
         return;
     } else if (pulse > target_pulse) {
         target_pulse++;
@@ -44,7 +44,7 @@ void Controller::loop() {
 #endif
 
 
-    if (target_pulse > LOW_THRESH && target_pulse < HIGH_THRESH) {
+    if (target_pulse > RC_PWM_LOW_THRESH && target_pulse < RC_PWM_HIGH_THRESH) {
         digitalWrite(FET_PIN, LOW);
         digitalWrite(LED2_PIN, HIGH);
         digitalWrite(LED1_PIN, LOW);
@@ -59,15 +59,15 @@ void Controller::loop() {
     }
 
 
-    if (target_pulse >= HIGH_THRESH) {
+    if (target_pulse >= RC_PWM_HIGH_THRESH) {
         digitalWrite(RELAY_PIN, LOW);
-        analogWrite(FET_PIN, (target_pulse - HIGH_THRESH) * 255 / settings.getHighDiff());
+        analogWrite(FET_PIN, (target_pulse - RC_PWM_HIGH_THRESH) * 255 / settings.getHighDiff());
         return;
     }
 
-    if (target_pulse <= LOW_THRESH) {
+    if (target_pulse <= RC_PWM_LOW_THRESH) {
         digitalWrite(RELAY_PIN, HIGH);
-        analogWrite(FET_PIN, (LOW_THRESH - target_pulse) * 255 / settings.getLowDiff());
+        analogWrite(FET_PIN, (RC_PWM_LOW_THRESH - target_pulse) * 255 / settings.getLowDiff());
         return;
     }
 }

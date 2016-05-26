@@ -1,3 +1,5 @@
+#ifdef CMAKE_BUILD
+
 #include <Arduino.h>
 #include "Controller.h"
 
@@ -15,3 +17,4 @@ int main(void) {
 
 }
 
+#endif

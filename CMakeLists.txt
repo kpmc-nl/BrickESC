@@ -8,8 +8,7 @@ set(AVR_FCPU "8000000")
 
 add_definitions(-DARDUINO_ARCH_AVR)
 
-add_definitions(-DLOOPTIME=1500) #microseconds
-add_definitions(-DRC_SAMPLE_SIZE=11)
+add_definitions(-DCMAKE_BUILD)
 
 file(STRINGS "attiny-core-path.txt" ATTINY_CORE_PATH)
 set(AVRDUDE_CONFIG "${ATTINY_CORE_PATH}/avr/avrdude.conf")

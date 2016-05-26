@@ -8,9 +8,6 @@
 
 #include <avr/io.h>
 
-#define RC_PWM_MIN 1000
-#define RC_PWM_MAX 2000
-#define RC_PWM_NEUTRAL 1500
 
 
 void setupRcInput();

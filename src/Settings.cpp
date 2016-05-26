@@ -21,16 +21,16 @@ void Settings::setupMode() {
     }
 
     /* read max pulse, assuming the user gives max input */
-    data.maxPulse = getCurrentRcInput() - OUTER_THRESH;
+    data.maxPulse = getCurrentRcInput() - RC_PWM_OUTER_THRESH;
     digitalWrite(LED1_PIN, HIGH);
 
     /* wait for low pulse */
-    while (getCurrentRcInput() > LOW_THRESH) {
+    while (getCurrentRcInput() > RC_PWM_LOW_THRESH) {
         delay(10);
     }
     delay(500);
     /* read low pulse, assuming the user gives min input */
-    data.minPulse = getCurrentRcInput() + OUTER_THRESH;
+    data.minPulse = getCurrentRcInput() + RC_PWM_OUTER_THRESH;
     digitalWrite(LED2_PIN, HIGH);
 }
 
@@ -49,8 +49,8 @@ void Settings::writeSettings() {
 void Settings::validateSettings() {
     // Validate settings as much as we can. If any error is detected,
     // the leds will blink furiously, to indicate that the setup must be performed.
-    if (data.minPulse < 500 || data.minPulse > LOW_THRESH ||
-        data.maxPulse > 2500 || data.maxPulse < HIGH_THRESH ||
+    if (data.minPulse < 500 || data.minPulse > RC_PWM_LOW_THRESH ||
+        data.maxPulse > 2500 || data.maxPulse < RC_PWM_HIGH_THRESH ||
         data.minPulse > data.maxPulse) {
         while (1) {
             digitalWrite(LED1_PIN, HIGH);
@@ -65,7 +65,7 @@ void Settings::validateSettings() {
 
 void Settings::waitForNeutral() {
     /* wait for neutral input */
-    while (getCurrentRcInput() > HIGH_THRESH || getCurrentRcInput() < LOW_THRESH) {
+    while (getCurrentRcInput() > RC_PWM_HIGH_THRESH || getCurrentRcInput() < RC_PWM_LOW_THRESH) {
         delay(10);
         /* wait for neutral */
     }
@@ -75,7 +75,7 @@ void Settings::waitForNeutral() {
 
 void Settings::init() {
     delay(500);
-    if (getCurrentRcInput() > HIGH_THRESH) {
+    if (getCurrentRcInput() > RC_PWM_HIGH_THRESH) {
         /* run setup mode if controller is turned on while the signal is high */
         setupMode();
         writeSettings();
@@ -86,8 +86,8 @@ void Settings::init() {
     writeSettings();
 
     /* initialize our runtime settings */
-    highDiff = data.maxPulse - HIGH_THRESH;
-    lowDiff = LOW_THRESH - data.minPulse;
+    highDiff = data.maxPulse - RC_PWM_HIGH_THRESH;
+    lowDiff = RC_PWM_LOW_THRESH - data.minPulse;
 
     validateSettings();
     waitForNeutral();

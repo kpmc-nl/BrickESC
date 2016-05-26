@@ -7,10 +7,7 @@
 
 #include <avr/eeprom.h>
 
-#define LOW_THRESH 1420
-#define HIGH_THRESH 1580
-#define NEUTRAL 1500
-#define OUTER_THRESH 20
+
 
 
 typedef struct {
