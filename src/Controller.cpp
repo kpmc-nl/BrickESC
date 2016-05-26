@@ -46,6 +46,7 @@ void Controller::loop() {
 
     if (target_pulse > RC_PWM_LOW_THRESH && target_pulse < RC_PWM_HIGH_THRESH) {
         digitalWrite(FET_PIN, LOW);
+//        digitalWrite(RELAY_PIN, LOW);
         digitalWrite(LED2_PIN, HIGH);
         digitalWrite(LED1_PIN, LOW);
         return;

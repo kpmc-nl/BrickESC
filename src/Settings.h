@@ -52,6 +52,8 @@ private:
 
     void waitForNeutral();
 
+    void motorTone(uint64_t freq, uint64_t duration);
+
 };
 
 

@@ -5,13 +5,14 @@
 
 Controller controller;
 
+
 int main(void) {
     // Mandatory init
     init();
 
     controller.setup();
 
-    while (true) {
+    while (1) {
         controller.loop();
     }
 
