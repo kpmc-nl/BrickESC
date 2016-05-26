@@ -1,30 +1,48 @@
-project(speed-controller)
-
 cmake_minimum_required(VERSION 2.6)
 
-set(AVRDUDE_PROGRAMMER_FLAGS -cstk500v1 -P/dev/cu.usbmodem1421 -b19200)
-set(AVR_MCU "attiny85")
+project(speed-controller)
+
+set(AVRDUDE_PROGRAMMER_FLAGS -cusbasp)
+set(AVR_MCU "attiny841")
 set(AVR_FCPU "8000000")
 
-include(cmake/avr-toolchain.cmake)
+add_definitions(-DARDUINO_ARCH_AVR)
 
-add_definitions(-DLOOPTIME=3000) #microseconds
+add_definitions(-DLOOPTIME=1500) #microseconds
 add_definitions(-DRC_SAMPLE_SIZE=11)
 
+file(STRINGS "attiny-core-path.txt" ATTINY_CORE_PATH)
+set(AVRDUDE_CONFIG "${ATTINY_CORE_PATH}/avr/avrdude.conf")
+
+include(cmake/arduino-1.6.cmake)
+include(cmake/avr-toolchain.cmake)
+
+
+include_directories(${ATTINY_CORE_PATH}/avr/cores/tinymodern)
 include_directories(src)
 
-set(SOURCE_FILES
-        # To switch between firmware types, enable one of the following
-        src/relay_fet.cpp
-        # src/dual_hbridge.cpp
+set(ARDUINO_SOURCE_FILES
 
-        # shared sources
-        src/output/DOut.cpp src/output/DOut.h
-        src/output/PWMOut.cpp src/output/PWMOut.h
-        src/clock/Clock.cpp src/clock/Clock.h
-        src/input/RCInput.cpp src/input/RCInput.h
-        src/controller/Controller.cpp src/controller/Controller.h
-        src/Math/Math.cpp src/Math/Math.h
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/pins_arduino.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/WInterrupts.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_analog.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_digital.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_pulse.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_shift.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/WMath.cpp
+
         )
+
+set(SOURCE_FILES
+        ${ARDUINO_SOURCE_FILES}
+
+        src/main.cpp
+        src/Controller.cpp src/Controller.h
+        src/RCInput.cpp src/RCInput.h
+        src/Settings.cpp src/Settings.h
+        src/util.cpp src/util.h
+        )
+
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
