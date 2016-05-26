@@ -21,16 +21,11 @@ include_directories(${ATTINY_CORE_PATH}/avr/cores/tinymodern)
 include_directories(src)
 
 set(ARDUINO_SOURCE_FILES
-
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/pins_arduino.c
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/WInterrupts.c
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring.c
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_analog.c
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_digital.c
-        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_pulse.c
-        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_shift.c
-        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/WMath.cpp
-
         )
 
 set(SOURCE_FILES

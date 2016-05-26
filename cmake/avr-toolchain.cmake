@@ -29,11 +29,10 @@ set(CMAKE_C_COMPILER ${AVR_GCC})
 set(CMAKE_CXX_COMPILER ${AVR_G++})
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
-# C only fine tuning
-set(C_TUNING_FLAGS "-funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums")
+set(AVR_FLAGS "-mmcu=${AVR_MCU} -DF_CPU=${AVR_FCPU}")
 
-set(CMAKE_CXX_FLAGS "-mmcu=${AVR_MCU} -DF_CPU=${AVR_FCPU} -Os")
-set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} ${C_TUNING_FLAGS} -Wall -Wstrict-prototypes -std=gnu99")
+set(CMAKE_CXX_FLAGS "${AVR_FLAGS} -Os -std=gnu++11 -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -Wall ")
+set(CMAKE_C_FLAGS "${AVR_FLAGS} -Os -std=gnu99 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wall ")
 
 add_custom_target(hex)
 add_dependencies(hex ${CMAKE_PROJECT_NAME})
