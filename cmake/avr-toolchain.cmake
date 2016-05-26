@@ -1,9 +1,15 @@
-find_program(AVR_GCC avr-gcc)
-find_program(AVR_G++ avr-g++)
-find_program(AVR_OBJCOPY avr-objcopy)
-find_program(AVRDUDE avrdude)
-
-find_program(BLAH ls)
+if (NOT AVR_GCC)
+    find_program(AVR_GCC avr-gcc)
+endif ()
+if (NOT AVR_G++)
+    find_program(AVR_G++ avr-g++)
+endif ()
+if (NOT AVR_OBJCOPY)
+    find_program(AVR_OBJCOPY avr-objcopy)
+endif ()
+if (NOT AVRDUDE)
+    find_program(AVRDUDE avrdude)
+endif ()
 
 if (NOT AVR_GCC)
     message(FATAL_ERROR "Please install avr-gcc")
@@ -40,5 +46,5 @@ add_custom_target(flash)
 add_dependencies(flash hex)
 
 add_custom_command(TARGET flash POST_BUILD
-        COMMAND ${AVRDUDE} -v -p${AVR_MCU} ${AVRDUDE_PROGRAMMER_FLAGS} -Uflash:w:${CMAKE_PROJECT_NAME}.hex:i
+        COMMAND ${AVRDUDE} -v -C${AVRDUDE_CONFIG} -p${AVR_MCU} ${AVRDUDE_PROGRAMMER_FLAGS} -Uflash:w:${CMAKE_PROJECT_NAME}.hex:i
         )

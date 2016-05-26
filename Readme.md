@@ -1,7 +1,9 @@
 # Speed Controller
 This repository contains the source code for our custom speed controllers. More details will follow when this project exceeds the proof-of-concept state.
 
-
+## How to build
+-- Will soon be filled. --
+  
 ## TODO
 - [x] Output PWM to FET's / H-Bridge
 - [x] Read receiver signal
@@ -10,6 +12,7 @@ This repository contains the source code for our custom speed controllers. More 
 - [x] Slow down motor response, to prevent magic smoke from exiting the FETs
 - [x] Make min/max pulse length user-configurable.
 - [x] Stabilize RC input (sampling + median filter)
+- [x] Switch to ATtiny841 MCU
 - [ ] Add neutral signal (stick center) to 'programming' sequence.
 - [ ] Read motor temperature and automatically slow down when the motor is too hot.
 - [ ] Add LiPo battery protection
