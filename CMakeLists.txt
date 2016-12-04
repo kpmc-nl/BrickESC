@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.6)
 
 project(speed-controller)
 
-set(AVRDUDE_PROGRAMMER_FLAGS -cusbasp)
+include(cmake/build-env.cmake)
+
 set(AVR_MCU "attiny841")
 set(AVR_FCPU "8000000")
 
@@ -10,7 +11,6 @@ add_definitions(-DARDUINO_ARCH_AVR)
 
 add_definitions(-DCMAKE_BUILD)
 
-file(STRINGS "attiny-core-path.txt" ATTINY_CORE_PATH)
 set(AVRDUDE_CONFIG "${ATTINY_CORE_PATH}/avr/avrdude.conf")
 
 include(cmake/arduino-1.6.cmake)
@@ -37,6 +37,5 @@ set(SOURCE_FILES
         src/Settings.cpp src/Settings.h
         src/util.cpp src/util.h
         )
-
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
