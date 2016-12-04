@@ -24,17 +24,10 @@ private:
     // settingsdata in ram
     SettingsData data;
 
-    /* used for mapping input pulse to output pulse */
-    uint64_t lowDiff;
-    uint64_t highDiff;
 
 public:
 
     void init();
-
-    uint64_t getLowDiff();
-
-    uint64_t getHighDiff();
 
     uint64_t getMaxPulse();
 
@@ -49,8 +42,6 @@ private:
     void readSettings();
 
     void validateSettings();
-
-    void waitForNeutral();
 
     void motorTone(uint64_t freq, uint64_t duration);
 

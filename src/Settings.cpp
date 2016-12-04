@@ -70,16 +70,6 @@ void Settings::validateSettings() {
     }
 }
 
-void Settings::waitForNeutral() {
-    /* wait for neutral input */
-    while (getCurrentRcInput() > RC_PWM_HIGH_THRESH || getCurrentRcInput() < RC_PWM_LOW_THRESH) {
-        delay(10);
-        /* wait for neutral */
-    }
-    digitalWrite(LED1_PIN, LOW);
-    digitalWrite(LED2_PIN, LOW);
-}
-
 void Settings::init() {
     delay(500);
 
@@ -98,26 +88,11 @@ void Settings::init() {
 
     validateSettings();
 
-    /* initialize our runtime settings */
-    highDiff = data.maxPulse - RC_PWM_HIGH_THRESH;
-    lowDiff = RC_PWM_LOW_THRESH - data.minPulse;
-
-    waitForNeutral();
 
     motorTone(900, 300);
     delay(100);
     motorTone(900, 300);
 }
-
-
-uint64_t Settings::getHighDiff() {
-    return highDiff;
-}
-
-uint64_t Settings::getLowDiff() {
-    return lowDiff;
-}
-
 
 uint64_t Settings::getMinPulse() {
     return data.minPulse;
