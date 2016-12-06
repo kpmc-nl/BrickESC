@@ -30,6 +30,22 @@ void Controller::loop() {
 
     target_pulse = getCurrentRcInput();
 
+    digitalWrite(LED1_PIN, LOW);
+    digitalWrite(LED2_PIN, LOW);
+
+    if(target_pulse >= settings.getMaxPulse()){
+        digitalWrite(LED1_PIN, HIGH);
+        analogWrite(FET_PIN, 255);
+        return;
+    }
+
+    if(target_pulse <= settings.getMinPulse()){
+        analogWrite(FET_PIN, 0);
+        digitalWrite(LED2_PIN, HIGH);
+        return;
+    }
+
+
 
     analogWrite(FET_PIN, (target_pulse - settings.getMinPulse()) * 255 / (settings.getMaxPulse() - settings.getMinPulse()));
 
