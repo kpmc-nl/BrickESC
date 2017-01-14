@@ -8,8 +8,6 @@
 #include <avr/eeprom.h>
 
 
-
-
 typedef struct {
     uint64_t minPulse;
     uint64_t maxPulse;
@@ -52,7 +50,7 @@ private:
 
     void waitForNeutral();
 
-    void motorTone(uint64_t freq, uint64_t duration);
+
 
 };
 

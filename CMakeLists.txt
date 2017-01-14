@@ -26,6 +26,7 @@ set(ARDUINO_SOURCE_FILES
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring.c
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_analog.c
         ${ATTINY_CORE_PATH}/avr/cores/tinymodern/wiring_digital.c
+        ${ATTINY_CORE_PATH}/avr/cores/tinymodern/WMath.cpp
         )
 
 set(SOURCE_FILES
@@ -36,6 +37,6 @@ set(SOURCE_FILES
         src/RCInput.cpp src/RCInput.h
         src/Settings.cpp src/Settings.h
         src/util.cpp src/util.h
-        )
+        src/main.h)
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
