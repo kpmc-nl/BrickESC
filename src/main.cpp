@@ -13,10 +13,6 @@ int main(void) {
     // Mandatory init
     init();
 
-
-
-    FUSE_BODACT0
-
     // run at 8mhz
     clock_prescale_set(clock_div_1);
 

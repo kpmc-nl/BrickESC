@@ -11,7 +11,7 @@ add_definitions(-DARDUINO_ARCH_AVR)
 
 add_definitions(-DCMAKE_BUILD)
 
-set(AVRDUDE_CONFIG "${ATTINY_CORE_PATH}/avr/avrdude.conf")
+set(AVRDUDE_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/avrdude.conf")
 
 include(cmake/arduino-1.6.cmake)
 include(cmake/avr-toolchain.cmake)
