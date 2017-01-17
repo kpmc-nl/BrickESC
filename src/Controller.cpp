@@ -20,7 +20,7 @@ void Controller::setup() {
     pinMode(RELAY_PIN, OUTPUT);
 
     Timer2_SetWaveformGenerationMode(Timer2_Fast_PWM_FF);
-    Timer2_ClockSelect(Timer2_Prescale_Value_1);
+    Timer2_ClockSelect(Timer2_Prescale_Value_64);
 
     setupRcInput();
     settings.init();
