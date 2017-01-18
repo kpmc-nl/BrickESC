@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 
+# let cmake know we are cross-compiling
+set(CMAKE_SYSTEM_NAME Generic)
+
 project(speed-controller)
 
 include(cmake/build-env.cmake)

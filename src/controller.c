@@ -21,8 +21,8 @@ typedef struct {
     uint64_t max_pulse;
 } settings_t;
 
-settings_t EEMEM eeprom_settings;
-settings_t runtime_settings;
+static settings_t EEMEM eeprom_settings;
+static settings_t runtime_settings;
 
 
 /* predeclarations */
@@ -34,7 +34,9 @@ static void wait_for_neutral();
 
 static int get_battery_voltage();
 
-void write_settings();
+static void write_settings();
+
+static void read_settings();
 
 static int cutoff_voltage = 0;
 static boolean battery_dead = false;
