@@ -28,7 +28,6 @@ int main(void) {
         controller_loop();
     }
 
-
 }
 
 #endif

@@ -43,6 +43,6 @@ set(SOURCE_FILES
         src/util.c src/util.h
 
         src/main.c
-        )
+        src/settings.c src/settings.h)
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})

@@ -5,9 +5,7 @@
 #ifndef RC_INPUT_H
 #define RC_INPUT_H
 
-
 #include <avr/io.h>
-
 
 void rc_input_setup();
 

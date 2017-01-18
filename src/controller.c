@@ -5,43 +5,21 @@
 #include <wiring.h>
 #include <core_pins.h>
 #include <core_adc.h>
-#include <avr/eeprom.h>
 #include "controller.h"
 #include "pinout.h"
 #include "motor.h"
 #include "rc_input.h"
 #include "rc.h"
+#include "settings.h"
 #include "util.h"
 
 
 #define LOOPTIME 1500
 
-typedef struct {
-    uint64_t min_pulse;
-    uint64_t max_pulse;
-} settings_t;
 
-static settings_t EEMEM eeprom_settings;
-static settings_t runtime_settings;
-
-
-/* predeclarations */
-static void validate_settings();
-
-static void setup_mode();
-
-static void wait_for_neutral();
-
-static int get_battery_voltage();
-
-static void write_settings();
-
-static void read_settings();
-
+static uint64_t target_pulse = RC_PWM_NEUTRAL;
 static int cutoff_voltage = 0;
 static boolean battery_dead = false;
-static uint64_t target_pulse = RC_PWM_NEUTRAL;
-
 
 void controller_setup() {
     pinMode(LED1_PIN, OUTPUT);
@@ -62,7 +40,7 @@ void controller_setup() {
     if (rc_input_get_current() > RC_PWM_HIGH_THRESH) {
         /* run setup mode if controller is turned on while the signal is high */
         setup_mode();
-        write_settings();
+        write_settins();
     } else {
         read_settings();
         delay(500);
@@ -73,11 +51,7 @@ void controller_setup() {
 
 
 
-//    high_diff = settings.max_pulse - RC_PWM_HIGH_THRESH;
-//    low_diff = RC_PWM_LOW_THRESH - settings.min_pulse;
-
-
-    for (uint8_t i = 0; i < cell_count; i++) {
+    for (uint8_t i = 0; i < 2; i++) {
         delay(100);
         digitalWrite(LED1_PIN, HIGH);
         motor_tone(600, 200);
@@ -88,27 +62,25 @@ void controller_setup() {
 
 void controller_loop() {
 
-//    for (uint8_t i = 0; get_battery_voltage() < cutoff_voltage && i < 5; i++) {
-//        if (i == 4) {
-//            battery_dead = true;
-//        }
-//    }
+    for (uint8_t i = 0; get_battery_voltage() < cutoff_voltage && i < 10; i++) {
+        if (i == 9) {
+            battery_dead = true;
+        }
+    }
 
-    // delayMicroseconds(LOOPTIME);
-    //   uint64_t pulse = rc_input_get_current();
+     delayMicroseconds(LOOPTIME);
+       uint64_t pulse = rc_input_get_current();
 
-//    if ((pulse <= RC_PWM_LOW_THRESH && target_pulse > RC_PWM_NEUTRAL) ||
-//        (pulse >= RC_PWM_HIGH_THRESH && target_pulse < RC_PWM_NEUTRAL)) {
-//        target_pulse = RC_PWM_NEUTRAL;
-//        return;
-//    } else if (pulse > target_pulse) {
-//        target_pulse++;
-//    } else if (pulse < target_pulse) {
-//        target_pulse--;
-//    }
+    if ((pulse <= RC_PWM_LOW_THRESH && target_pulse > RC_PWM_NEUTRAL) ||
+        (pulse >= RC_PWM_HIGH_THRESH && target_pulse < RC_PWM_NEUTRAL)) {
+        target_pulse = RC_PWM_NEUTRAL;
+        return;
+    } else if (pulse > target_pulse) {
+        target_pulse++;
+    } else if (pulse < target_pulse) {
+        target_pulse--;
+    }
 
-
-    target_pulse = rc_input_get_current();
 
     if (target_pulse > RC_PWM_LOW_THRESH && target_pulse < RC_PWM_HIGH_THRESH) {
         digitalWrite(FET_PIN, LOW);
@@ -118,88 +90,29 @@ void controller_loop() {
     }
     digitalWrite(LED2_PIN, LOW);
 
-    if (target_pulse <= runtime_settings.min_pulse || target_pulse >= runtime_settings.max_pulse) {
+    if (target_pulse <= get_settings().min_pulse || target_pulse >= get_settings().max_pulse) {
         digitalWrite(LED1_PIN, HIGH);
     } else {
         digitalWrite(LED1_PIN, LOW);
     }
 
     uint8_t full_power = 255;
-//    if (battery_dead) {
-//        full_power = 48;
-//    }
+    if (battery_dead) {
+        full_power = 64;
+    }
 
     if (target_pulse >= RC_PWM_HIGH_THRESH) {
         motor_forward();
-
-        analogWrite(FET_PIN, map((target_pulse - RC_PWM_NEUTRAL), 0, runtime_settings.max_pulse, 0, 255));
-
-
-        //motor_power((target_pulse - RC_PWM_HIGH_THRESH) * full_power / high_diff);
+        motor_power((target_pulse - RC_PWM_HIGH_THRESH) * full_power / (get_settings().max_pulse - RC_PWM_HIGH_THRESH));
         return;
     }
 
     if (target_pulse <= RC_PWM_LOW_THRESH) {
         motor_reverse();
-        motor_power(0);
-
-        //motor_power((RC_PWM_LOW_THRESH - target_pulse) * full_power / low_diff);
+        motor_power((RC_PWM_LOW_THRESH - target_pulse) * full_power / (RC_PWM_LOW_THRESH - get_settings().min_pulse));
         return;
     }
 
-}
-
-
-static void setup_mode() {
-
-    /* inidcate that we are running the setup mode */
-
-    for (uint8_t i = 0; i < 3; i++) {
-        digitalWrite(LED1_PIN, HIGH);
-        digitalWrite(LED2_PIN, HIGH);
-        delay(100);
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, LOW);
-        delay(100);
-    }
-
-    /* read max pulse, assuming the user gives max input */
-    runtime_settings.max_pulse = rc_input_get_current() - RC_PWM_OUTER_THRESH;
-    digitalWrite(LED1_PIN, HIGH);
-    motor_tone(1200, 300);
-
-    /* wait for low pulse */
-    while (rc_input_get_current() > RC_PWM_LOW_THRESH) {
-        delay(10);
-    }
-    delay(500);
-    /* read low pulse, assuming the user gives min input */
-    runtime_settings.max_pulse = rc_input_get_current() + RC_PWM_OUTER_THRESH;
-    digitalWrite(LED2_PIN, HIGH);
-    motor_tone(1200, 300);
-
-}
-
-void validate_settings() {
-    // Validate settings as much as we can. If any error is detected,
-    // the leds will blink furiously, to indicate that the setup must be performed.
-    if (runtime_settings.min_pulse < 500 || runtime_settings.min_pulse > RC_PWM_LOW_THRESH ||
-        runtime_settings.max_pulse > 2500 || runtime_settings.max_pulse < RC_PWM_HIGH_THRESH ||
-        runtime_settings.min_pulse > runtime_settings.max_pulse) {
-        while (rc_input_get_current() < RC_PWM_HIGH_THRESH) {
-
-            digitalWrite(LED1_PIN, HIGH);
-            digitalWrite(LED2_PIN, LOW);
-            motor_tone(900, 100);
-            delay(100);
-            digitalWrite(LED2_PIN, HIGH);
-            digitalWrite(LED1_PIN, LOW);
-            motor_tone(900, 100);
-            delay(100);
-        }
-        setup_mode();
-        write_settings();
-    }
 }
 
 
@@ -212,18 +125,8 @@ void wait_for_neutral() {
     digitalWrite(LED2_PIN, LOW);
 }
 
+
 int get_battery_voltage() {
     /* in millivolts */
     return map(analogRead(VOLTAGE_SENSOR), 0, 1023, 0, 21000);
 }
-
-void read_settings() {
-    /* read settings from eeprom if controller is started while the signal is neutral or low */
-    eeprom_read_block(&runtime_settings, &eeprom_settings, sizeof(settings_t));
-}
-
-void write_settings() {
-    /* store the settings in the eeprom */
-    eeprom_write_block(&runtime_settings, &eeprom_settings, sizeof(settings_t));
-}
-

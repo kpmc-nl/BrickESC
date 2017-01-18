@@ -10,7 +10,7 @@
 
 void motor_setup();
 
-void motor_power(uint8_t power);
+void motor_power(int power);
 
 void motor_reverse();
 

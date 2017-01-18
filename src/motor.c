@@ -18,7 +18,7 @@ void motor_setup() {
     Timer2_ClockSelect(Timer2_Prescale_Value_1);
 }
 
-void motor_power(uint8_t power) {
+void motor_power(int power) {
     analogWrite(FET_PIN, power);
 }
 
