@@ -10,5 +10,6 @@
 #define FET_PIN PIN_A7
 #define RELAY_PIN PIN_B2
 #define VOLTAGE_SENSOR ADC_Input_ADC1
+#define TEMP_SENSOR ADC_Input_ADC2
 
 #endif /* SC_PINOUT_H */

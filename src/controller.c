@@ -19,7 +19,8 @@
 
 static uint64_t target_pulse = RC_PWM_NEUTRAL;
 static int cutoff_voltage = 0;
-static boolean battery_dead = false;
+static int cutoff_temperature_voltage = 1150; // voltage in mV NTC B57164-K103-K  @ 50 gr C
+static boolean reduce_power = false;
 
 void controller_setup() {
     pinMode(LED1_PIN, OUTPUT);
@@ -64,11 +65,18 @@ void controller_loop() {
 
     for (uint8_t i = 0; get_battery_voltage() < cutoff_voltage && i < 10; i++) {
         if (i == 9) {
-            battery_dead = true;
+            reduce_power = true;
         }
     }
 
-     delayMicroseconds(LOOPTIME);
+    for (uint8_t i = 0; get_temperature_voltage() < cutoff_temperature_voltage && i < 100; i++) {
+        if (i == 9) {
+            reduce_power = true;
+        }
+    }
+
+    
+    delayMicroseconds(LOOPTIME);
        uint64_t pulse = rc_input_get_current();
 
     if ((pulse <= RC_PWM_LOW_THRESH && target_pulse > RC_PWM_NEUTRAL) ||
@@ -97,7 +105,7 @@ void controller_loop() {
     }
 
     uint8_t full_power = 255;
-    if (battery_dead) {
+    if (reduce_power) {
         full_power = 64;
     }
 
@@ -129,4 +137,9 @@ void wait_for_neutral() {
 int get_battery_voltage() {
     /* in millivolts */
     return map(analogRead(VOLTAGE_SENSOR), 0, 1023, 0, 21000);
+}
+
+int get_temperature_voltage() {
+    /* in millivolts */
+    return map(analogRead(TEMP_SENSOR), 0, 1023, 0, 5000);
 }
