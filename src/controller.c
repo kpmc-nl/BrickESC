@@ -19,7 +19,7 @@
 
 static uint64_t target_pulse = RC_PWM_NEUTRAL;
 static int cutoff_voltage = 0;
-static int cutoff_temperature_voltage = 1150; // voltage in mV NTC B57164-K103-K  @ 50 gr C
+static int cutoff_temperature_voltage = 2500; // voltage in mV NTC B57164-K103-K  @ 50 gr C
 static boolean reduce_power = false;
 
 void controller_setup() {

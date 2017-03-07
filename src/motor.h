@@ -6,8 +6,6 @@
 #define SC_MOTOR_H
 
 
-#include <stdint.h>
-
 void motor_setup();
 
 void motor_power(int power);
