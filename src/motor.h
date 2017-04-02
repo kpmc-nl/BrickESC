@@ -5,6 +5,7 @@
 #ifndef SC_MOTOR_H
 #define SC_MOTOR_H
 
+#include <stdint.h>
 
 void motor_setup();
 

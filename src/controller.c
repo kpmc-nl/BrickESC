@@ -2,16 +2,14 @@
 // Created by Matthijs Oosterhoff on 17/01/2017.
 //
 
-#include <wiring.h>
-#include <core_pins.h>
-#include <core_adc.h>
 #include "controller.h"
+#include <Arduino.h>
 #include "pinout.h"
+#include "rc.h"
+#include "util.h"
 #include "motor.h"
 #include "rc_input.h"
-#include "rc.h"
 #include "settings.h"
-#include "util.h"
 
 
 #define LOOPTIME 1500

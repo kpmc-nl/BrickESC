@@ -2,14 +2,14 @@
 // Created by matthijs on 1/18/17.
 //
 
-#include <avr/eeprom.h>
-#include <wiring.h>
-#include <core_pins.h>
+
 #include "settings.h"
+#include <Arduino.h>
+#include <avr/eeprom.h>
 #include "pinout.h"
 #include "rc.h"
-#include "rc_input.h"
 #include "motor.h"
+#include "rc_input.h"
 
 
 static settings_t EEMEM eeprom_settings;

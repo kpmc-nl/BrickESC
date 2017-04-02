@@ -5,6 +5,8 @@
 #ifndef SC_SETTINGS_H
 #define SC_SETTINGS_H
 
+#include <stdint.h>
+
 typedef struct {
     uint64_t min_pulse;
     uint64_t max_pulse;

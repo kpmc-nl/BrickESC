@@ -2,11 +2,11 @@
 // Created by Matthijs Oosterhoff on 17/01/2017.
 //
 
-#include <wiring.h>
-#include <core_pins.h>
-#include <PwmTimer.h>
 #include "motor.h"
+#include <Arduino.h>
+#include <PwmTimer.h>
 #include "pinout.h"
+
 
 
 void motor_setup() {

@@ -2,11 +2,11 @@
 // Created by Matthijs Oosterhoff on 25/05/16.
 //
 
-#include <wiring.h>
-#include "rc.h"
 #include "rc_input.h"
-#include "util.h"
+#include <Arduino.h>
 #include "pinout.h"
+#include "rc.h"
+#include "util.h"
 
 #define RC_SAMPLE_SIZE 11
 

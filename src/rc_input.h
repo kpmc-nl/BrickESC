@@ -6,6 +6,8 @@
 #define RC_INPUT_H
 
 
+#include <stdint.h>
+
 void rc_input_setup();
 
 uint64_t rc_input_get_current();
