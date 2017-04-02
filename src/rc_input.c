@@ -6,6 +6,7 @@
 #include "rc.h"
 #include "rc_input.h"
 #include "util.h"
+#include "pinout.h"
 
 #define RC_SAMPLE_SIZE 11
 
@@ -18,10 +19,12 @@ static void input_rising();
 
 static void input_falling();
 
+
 /* interface specified by rc_input.h*/
 void rc_input_setup() {
     /* input 0 is pin 3 */
-    attachInterrupt(0, input_rising, RISING);
+    pinMode(RC_input_PIN,INPUT_PULLUP);
+    attachInterrupt( RC_input_INT, input_rising, RISING);
 }
 
 uint64_t rc_input_get_current() {
@@ -36,12 +39,12 @@ uint64_t rc_input_get_current() {
 
 /* impl of 'private' functions */
 static void input_rising() {
-    attachInterrupt(0, input_falling, FALLING);
+    attachInterrupt( RC_input_INT, input_falling, FALLING);
     prev_time = micros();
 }
 
 static void input_falling() {
-    attachInterrupt(0, input_rising, RISING);
+    attachInterrupt( RC_input_INT, input_rising, RISING);
 
 
     uint64_t pwm_value = micros() - prev_time;

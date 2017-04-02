@@ -22,7 +22,7 @@ static int cutoff_voltage = 0;
 static int cutoff_temperature = 30; // C // NTC B57164-K103-K
 static boolean reduce_power = false;
 
-void controller_setup() {
+void  controller_setup() {
     pinMode(LED1_PIN, OUTPUT);
     pinMode(LED2_PIN, OUTPUT);
     pinMode(FET_PIN, OUTPUT);
@@ -69,19 +69,21 @@ void controller_loop() {
         }
     }
 
-    for (uint8_t i = 0; get_temperature_voltage() < 
-        ((-0.009501682077898 *cutoff_temperature+0.98204925041399)*5000)   && i < 100; i++) {
+    for (uint8_t i = 0;
+            get_temperature_voltage() < ((-0.009501682077898 *cutoff_temperature+0.98204925041399)*5000)
+            && i < 10; i++) {
         if (i == 9) {
             reduce_power = true;
+//            digitalWrite(LED2_PIN, HIGH);
         }
     }
 
-    
+
     delayMicroseconds(LOOPTIME);
-       uint64_t pulse = rc_input_get_current();
+    uint64_t pulse = rc_input_get_current();
 
     if ((pulse <= RC_PWM_LOW_THRESH && target_pulse > RC_PWM_NEUTRAL) ||
-        (pulse >= RC_PWM_HIGH_THRESH && target_pulse < RC_PWM_NEUTRAL)) {
+            (pulse >= RC_PWM_HIGH_THRESH && target_pulse < RC_PWM_NEUTRAL)) {
         target_pulse = RC_PWM_NEUTRAL;
         return;
     } else if (pulse > target_pulse) {
