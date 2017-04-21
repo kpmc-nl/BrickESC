@@ -5,6 +5,7 @@
 #include "motor.h"
 #include <Arduino.h>
 #include <PwmTimer.h>
+#include <core_timers.h>
 #include "pinout.h"
 
 
@@ -15,8 +16,16 @@ void motor_setup() {
 
     /* Use 32kHz 'Fast PWM' */
     Timer2_SetWaveformGenerationMode(Timer2_Fast_PWM_FF);
-    Timer2_ClockSelect(Timer2_Prescale_Value_1);
+    Timer2_ClockSelect(Timer2_Prescale_Value_256);
 }
+
+/*
+#define TIMER2_PRESCALER_VALUE_1  (1)
+#define TIMER2_PRESCALER_VALUE_2  (8)
+#define TIMER2_PRESCALER_VALUE_3  (64)
+#define TIMER2_PRESCALER_VALUE_4  (256)
+#define TIMER2_PRESCALER_VALUE_5  (1024)
+*/
 
 void motor_power(int power) {
     analogWrite(FET_PIN, power);

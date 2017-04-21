@@ -24,7 +24,8 @@ static void input_falling();
 void rc_input_setup() {
     /* input 0 is pin 3 */
     pinMode(RC_input_PIN,INPUT_PULLUP);
-    attachInterrupt( RC_input_INT, input_rising, RISING);
+//    attachInterrupt( RC_input_INT, input_rising, RISING);
+    attachInterrupt( RC_input_INT, input_rising, FALLING);
 }
 
 uint64_t rc_input_get_current() {
@@ -39,12 +40,14 @@ uint64_t rc_input_get_current() {
 
 /* impl of 'private' functions */
 static void input_rising() {
-    attachInterrupt( RC_input_INT, input_falling, FALLING);
+//    attachInterrupt( RC_input_INT, input_falling, FALLING);
+    attachInterrupt( RC_input_INT, input_falling, RISING);
     prev_time = micros();
 }
 
 static void input_falling() {
-    attachInterrupt( RC_input_INT, input_rising, RISING);
+//    attachInterrupt( RC_input_INT, input_rising, RISING);
+    attachInterrupt( RC_input_INT, input_rising, FALLING);
 
 
     uint64_t pwm_value = micros() - prev_time;
