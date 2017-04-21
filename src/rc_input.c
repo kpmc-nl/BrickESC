@@ -15,17 +15,16 @@ static uint64_t prev_time = 0;
 static uint8_t sample_counter;
 
 /* forward declarations */
-static void input_rising();
+static void handle_input_falling();
 
-static void input_falling();
+static void hanle_input_rising();
 
 
 /* interface specified by rc_input.h*/
 void rc_input_setup() {
     /* input 0 is pin 3 */
     pinMode(RC_input_PIN,INPUT_PULLUP);
-//    attachInterrupt( RC_input_INT, input_rising, RISING);
-    attachInterrupt( RC_input_INT, input_rising, FALLING);
+    attachInterrupt(RC_input_INT, handle_input_falling, FALLING);
 }
 
 uint64_t rc_input_get_current() {
@@ -39,15 +38,13 @@ uint64_t rc_input_get_current() {
 
 
 /* impl of 'private' functions */
-static void input_rising() {
-//    attachInterrupt( RC_input_INT, input_falling, FALLING);
-    attachInterrupt( RC_input_INT, input_falling, RISING);
+static void handle_input_falling() {
+    attachInterrupt(RC_input_INT, hanle_input_rising, RISING);
     prev_time = micros();
 }
 
-static void input_falling() {
-//    attachInterrupt( RC_input_INT, input_rising, RISING);
-    attachInterrupt( RC_input_INT, input_rising, FALLING);
+static void hanle_input_rising() {
+    attachInterrupt(RC_input_INT, handle_input_falling, FALLING);
 
 
     uint64_t pwm_value = micros() - prev_time;
