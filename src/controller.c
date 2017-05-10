@@ -33,15 +33,6 @@ void controller_setup() {
     uint8_t cell_count = 1 + (voltage / 4250);
     cutoff_voltage = 3400 * cell_count;
 
-    for (int8_t i = 1; i <= cell_count; i++) {
-        digitalWrite(LED1_PIN, HIGH);
-        digitalWrite(LED2_PIN, HIGH);
-        motor_tone(1500, 60);
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, LOW);
-        delay(800);
-    }
-
     motor_tone(600, 200);
     motor_tone(900, 200);
     motor_tone(1200, 200);
@@ -59,11 +50,13 @@ void controller_setup() {
     wait_for_neutral();
 
 
-    for (uint8_t i = 0; i < 2; i++) {
-        delay(100);
+    for (int8_t i = 1; i <= cell_count; i++) {
+        delay(800);
         digitalWrite(LED1_PIN, HIGH);
-        motor_tone(600, 200);
+        digitalWrite(LED2_PIN, HIGH);
+        motor_tone(1500, 60);
         digitalWrite(LED1_PIN, LOW);
+        digitalWrite(LED2_PIN, LOW);
     }
 
 }
