@@ -4,8 +4,6 @@
 
 #include "motor.h"
 #include <Arduino.h>
-#include <PwmTimer.h>
-#include <core_timers.h>
 #include "pinout.h"
 
 
@@ -13,9 +11,13 @@ void motor_setup() {
     pinMode(FET_PIN, OUTPUT);
     pinMode(RELAY_PIN, OUTPUT);
 
-    /* Use 125Hz 'Fast PWM' */
-    Timer2_SetWaveformGenerationMode(Timer2_Fast_PWM_FF);
-    Timer2_ClockSelect(Timer2_Prescale_Value_256);
+
+    /* Set WGM (Wave Form Generation Mode) to Fast PWM */
+    TCCR0A |= (1 << WGM00) | (1 << WGM01);
+
+    /* Set CS (Clock Select) to internal clock 0; IE no prescaling */
+    TCCR0B |= (1 << CS00);
+
 }
 
 

@@ -14,9 +14,6 @@ int main(void) {
     /* Run at 8MHz */
     clock_prescale_set(clock_div_1);
 
-    /* Use the 5v on AREF as analog reference */
-    analogReference(EXTERNAL);
-
     /* setup components */
     rc_input_setup();
     motor_setup();
