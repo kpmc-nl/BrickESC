@@ -5,16 +5,14 @@ set(CMAKE_SYSTEM_NAME Generic)
 
 project(speed-controller)
 
-include(cmake/build-env.cmake)
+include(env.cmake)
 
 set(AVR_MCU "attiny841")
 set(AVR_FCPU "8000000")
 
 add_definitions(-DARDUINO_ARCH_AVR)
 
-add_definitions(-DCMAKE_BUILD)
-
-set(AVRDUDE_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/avrdude.conf")
+set(AVRDUDE_OPTIONS -C${CMAKE_CURRENT_SOURCE_DIR}/avrdude.conf)
 
 include(cmake/arduino.cmake)
 include(cmake/avr-toolchain.cmake)
@@ -45,4 +43,4 @@ set(SOURCE_FILES
         src/main.c
         src/settings.c src/settings.h)
 
-add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
+add_avr_firmware(${PROJECT_NAME} ${SOURCE_FILES})

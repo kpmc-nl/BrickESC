@@ -1,4 +1,3 @@
-#ifdef CMAKE_BUILD
 
 #include <Arduino.h>
 #include <avr/power.h>
@@ -29,5 +28,3 @@ int main(void) {
     }
 
 }
-
-#endif
