@@ -20,8 +20,8 @@ static uint64_t last_motor_on = 0;
 void controller_setup() {
     pinMode(LED1_PIN, OUTPUT);
     pinMode(LED2_PIN, OUTPUT);
-    pinMode(FET_PIN, OUTPUT);
-    pinMode(RELAY_PIN, OUTPUT);
+    pinMode(FORWARD_PIN, OUTPUT);
+    pinMode(REVERSE_PIN, OUTPUT);
 
     delay(500);
 
@@ -74,7 +74,7 @@ void controller_loop() {
     }
 
     if (target_pulse > RC_PWM_LOW_THRESH && target_pulse < RC_PWM_HIGH_THRESH) {
-        digitalWrite(FET_PIN, LOW);
+        digitalWrite(FORWARD_PIN, LOW);
         digitalWrite(LED2_PIN, HIGH);
         digitalWrite(LED1_PIN, LOW);
 

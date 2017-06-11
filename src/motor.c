@@ -6,10 +6,11 @@
 #include <Arduino.h>
 #include "pinout.h"
 
+static boolean reverse;
 
 void motor_setup() {
-    pinMode(FET_PIN, OUTPUT);
-    pinMode(RELAY_PIN, OUTPUT);
+    pinMode(FORWARD_PIN, OUTPUT);
+    pinMode(REVERSE_PIN, OUTPUT);
 
 
     /* Set WGM (Wave Form Generation Mode) to Fast PWM */
@@ -22,25 +23,33 @@ void motor_setup() {
 
 
 void motor_power(int power) {
-    analogWrite(FET_PIN, power);
+
+    if(reverse){
+        digitalWrite(FORWARD_PIN, 0);
+        analogWrite(REVERSE_PIN, power);
+    }else{
+        digitalWrite(REVERSE_PIN, 0);
+        analogWrite(FORWARD_PIN, power);
+    }
 }
 
 void motor_reverse() {
-    digitalWrite(RELAY_PIN, HIGH);
+    reverse = true;
 }
 
 void motor_forward() {
-    digitalWrite(RELAY_PIN, LOW);
+    reverse = false;
 }
 
 void motor_tone(uint64_t freq, uint64_t duration) {
+
     uint64_t period_usec = 1000000 / freq;
     uint64_t k = duration * 1000 / period_usec;
 
     for (uint64_t i = 0; i < k; i++) {
-        digitalWrite(FET_PIN, HIGH);
+        digitalWrite(FORWARD_PIN, HIGH);
         delayMicroseconds(1);
-        digitalWrite(FET_PIN, LOW);
+        digitalWrite(FORWARD_PIN, LOW);
         delayMicroseconds(period_usec);
     }
 }
