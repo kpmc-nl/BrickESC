@@ -21,7 +21,7 @@ int main(void) {
 
     /* The main logic loop */
     while (true) {
-        controller_loop();
+
     }
 
 }
