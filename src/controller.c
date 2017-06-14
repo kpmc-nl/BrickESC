@@ -11,14 +11,14 @@
 #include "rc_input.h"
 #include "settings.h"
 
-#define LOOPTIME 3000
+#define LOOPTIME 900  //3000
 
 static uint64_t target_pulse = RC_PWM_NEUTRAL;
 
 static uint64_t last_motor_on = 0;
 
 void controller_setup() {
-    pinMode(LED1_PIN, OUTPUT);
+//    pinMode(LED1_PIN, OUTPUT);
     pinMode(LED2_PIN, OUTPUT);
     pinMode(FORWARD_PIN, OUTPUT);
     pinMode(REVERSE_PIN, OUTPUT);
@@ -76,7 +76,7 @@ void controller_loop() {
     if (target_pulse > RC_PWM_LOW_THRESH && target_pulse < RC_PWM_HIGH_THRESH) {
         digitalWrite(FORWARD_PIN, LOW);
         digitalWrite(LED2_PIN, HIGH);
-        digitalWrite(LED1_PIN, LOW);
+//        digitalWrite(LED1_PIN, LOW);
 
         if (millis() - 3000 > last_motor_on) {
             /* make sure the relay is not active when throttle is idle */
@@ -90,26 +90,31 @@ void controller_loop() {
     digitalWrite(LED2_PIN, LOW);
 
     if (target_pulse <= get_settings().min_pulse || target_pulse >= get_settings().max_pulse) {
-        digitalWrite(LED1_PIN, HIGH);
+//        digitalWrite(LED1_PIN, HIGH);
     } else {
-        digitalWrite(LED1_PIN, LOW);
+//        digitalWrite(LED1_PIN, LOW);
     }
 
     uint8_t full_power = 255;
 
-
+    // if target_pulse is set for forward
     if (target_pulse >= RC_PWM_HIGH_THRESH) {
         motor_forward();
         motor_power((target_pulse - RC_PWM_HIGH_THRESH) * full_power / (get_settings().max_pulse - RC_PWM_HIGH_THRESH));
         return;
     }
-
+    
+    // if target_pulse is set for reverse
     if (target_pulse <= RC_PWM_LOW_THRESH) {
         motor_reverse();
         motor_power((RC_PWM_LOW_THRESH - target_pulse) * full_power / (RC_PWM_LOW_THRESH - get_settings().min_pulse));
         return;
     }
-
+    
+    // if target pulse is between forward and reverse
+    if ((target_pulse < RC_PWM_HIGH_THRESH) && (target_pulse > RC_PWM_LOW_THRESH)) {
+        motor_stop();
+    }
 }
 
 
@@ -118,6 +123,6 @@ void wait_for_neutral() {
     while (rc_input_get_current() > RC_PWM_HIGH_THRESH || rc_input_get_current() < RC_PWM_LOW_THRESH) {
         delay(10);
     }
-    digitalWrite(LED1_PIN, LOW);
+//    digitalWrite(LED1_PIN, LOW);
     digitalWrite(LED2_PIN, LOW);
 }

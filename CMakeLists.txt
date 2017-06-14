@@ -5,7 +5,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 
 project(speed-controller)
 
-include(env.cmake)
+include(cmake/build-env.cmake)
 
 set(AVR_MCU "attiny85")
 set(AVR_FCPU "8000000")

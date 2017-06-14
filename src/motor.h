@@ -15,6 +15,8 @@ void motor_reverse();
 
 void motor_forward();
 
+void motor_stop();
+
 void motor_tone(uint64_t freq, uint64_t duration);
 
 #endif /* SC_MOTOR_H */

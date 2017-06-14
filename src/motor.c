@@ -11,26 +11,37 @@ static boolean reverse;
 void motor_setup() {
     pinMode(FORWARD_PIN, OUTPUT);
     pinMode(REVERSE_PIN, OUTPUT);
-
+    pinMode(ENABLE_PIN, OUTPUT);
 
     /* Set WGM (Wave Form Generation Mode) to Fast PWM */
     TCCR0A |= (1 << WGM00) | (1 << WGM01);
 
     /* Set CS (Clock Select) to internal clock 0; IE no prescaling */
-    TCCR0B |= (1 << CS00);
-
+      TCCR0B |= ( 1 << CS00);                   //    0 0 1 clk I/O /(No prescaling)
+//    TCCR0B |= ( 1 << CS01 );                  //    0 1 0 clk I/O /8 (From prescaler)
+//    TCCR0B |= ( 1 << CS01 ) | ( 1<< CS00 );   //    0 1 1 clk I/O /64 (From prescaler)
+//    TCCR0B |= ( 1 << CS02 );                  //    1 0 0 clk I/O /256 (From prescaler)
+//    TCCR0B |= ( 1 << CS02 ) | ( 1<< CS00 );   //    1 0 1 clk I/O /1024 (From prescaler)
 }
-
 
 void motor_power(int power) {
 
-    if(reverse){
+    if (reverse) {
         digitalWrite(FORWARD_PIN, 0);
-        analogWrite(REVERSE_PIN, power);
-    }else{
+        digitalWrite(REVERSE_PIN, 1);
+        analogWrite(ENABLE_PIN, power);
+    } else {
+        digitalWrite(FORWARD_PIN, 1);
         digitalWrite(REVERSE_PIN, 0);
-        analogWrite(FORWARD_PIN, power);
+        analogWrite(ENABLE_PIN, power);
     }
+}
+
+void motor_stop() {
+
+    digitalWrite(FORWARD_PIN, 0);
+    digitalWrite(REVERSE_PIN, 0);
+    digitalWrite(ENABLE_PIN, 1);
 }
 
 void motor_reverse() {
