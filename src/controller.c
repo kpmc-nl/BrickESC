@@ -13,12 +13,10 @@
 
 #define LOOPTIME 3000
 
-static uint64_t target_pulse = RC_PWM_NEUTRAL;
+static uint64_t target_pulse = RC_PWM_MIN;
 static int cutoff_voltage = 0;
 static int cutoff_temperature = 40; // C // NTC B57164-K103-K
 static boolean reduce_power = false;
-
-static unsigned long last_motor_on;
 
 
 void controller_setup() {
@@ -47,7 +45,6 @@ void controller_setup() {
     }
 
     validate_settings();
-    wait_for_neutral();
 
 
     for (int8_t i = 1; i <= cell_count; i++) {
@@ -79,44 +76,21 @@ void controller_loop() {
     }
 
 
-    delayMicroseconds(LOOPTIME);
 
-    uint64_t pulse = rc_input_get_current();
+    target_pulse = rc_input_get_current();
 
-
-    if(pulse > target_pulse){
-
-        if(target_pulse < RC_PWM_NEUTRAL && pulse >= RC_PWM_LOW_THRESH){
-            target_pulse = min(RC_PWM_NEUTRAL, target_pulse + 15);
-        }else{
-            target_pulse++;
-        }
-
-    }else{
-
-        if(target_pulse > RC_PWM_NEUTRAL && pulse <= RC_PWM_HIGH_THRESH){
-            target_pulse = max(RC_PWM_NEUTRAL, target_pulse - 15);
-        }else{
-            target_pulse--;
-        }
-
-    }
-
-    if (target_pulse > RC_PWM_LOW_THRESH && target_pulse < RC_PWM_HIGH_THRESH) {
-        digitalWrite(FET_PIN, LOW);
-        digitalWrite(LED2_PIN, HIGH);
-        digitalWrite(LED1_PIN, LOW);
-
-        if(millis() - 3000 > last_motor_on){
-            /* make sure the relay is not active when throttle is idle */
-            motor_forward();
-        }
+    if(target_pulse >= get_settings().max_pulse){
+        digitalWrite(LED1_PIN, HIGH);
+        analogWrite(FET_PIN, 255);
         return;
-    }else{
-        last_motor_on = millis();
     }
 
-    digitalWrite(LED2_PIN, LOW);
+    if(target_pulse <= get_settings().min_pulse){
+        analogWrite(FET_PIN, 0);
+        digitalWrite(LED2_PIN, HIGH);
+        return;
+    }
+
 
     if (target_pulse <= get_settings().min_pulse || target_pulse >= get_settings().max_pulse) {
         digitalWrite(LED1_PIN, HIGH);
@@ -129,30 +103,12 @@ void controller_loop() {
         full_power = 64;
     }
 
-
-    if (target_pulse >= RC_PWM_HIGH_THRESH) {
-        motor_forward();
-        motor_power((target_pulse - RC_PWM_HIGH_THRESH) * full_power / (get_settings().max_pulse - RC_PWM_HIGH_THRESH));
-        return;
-    }
-
-    if (target_pulse <= RC_PWM_LOW_THRESH) {
-        motor_reverse();
-        motor_power((RC_PWM_LOW_THRESH - target_pulse) * full_power / (RC_PWM_LOW_THRESH - get_settings().min_pulse));
-        return;
-    }
+    analogWrite(FET_PIN, (target_pulse - get_settings().min_pulse) * full_power / (get_settings().max_pulse - get_settings().min_pulse));
 
 }
 
 
-void wait_for_neutral() {
-    /* wait for neutral input */
-    while (rc_input_get_current() > RC_PWM_HIGH_THRESH || rc_input_get_current() < RC_PWM_LOW_THRESH) {
-        delay(10);
-    }
-    digitalWrite(LED1_PIN, LOW);
-    digitalWrite(LED2_PIN, LOW);
-}
+
 
 
 int get_battery_voltage() {
