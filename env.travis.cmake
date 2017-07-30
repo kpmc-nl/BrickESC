@@ -1,0 +1,1 @@
+set(ARDUINO_PATH $ENV{TRAVIS_BUILD_DIR}/arduino-1.8.3)
