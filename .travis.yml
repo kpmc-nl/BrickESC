@@ -13,12 +13,12 @@ addons:
     - cmake
 
 before_install:
-- "[ -e ./arduino-1.8.3/arduino ] || $(wget http://downloads.arduino.cc/arduino-1.8.3-linux64.tar.xz
-  && tar xf arduino-1.8.3-linux64.tar.xz)"
+- "[ -e ./arduino-1.8.3/arduino ] || $(wget http://downloads.arduino.cc/arduino-1.6.0-linux64.tar.xz
+  && tar xf arduino-1.6.0-linux64.tar.xz)"
 - cp env.travis.cmake env.cmake
 
 cache:
   directories:
-  - "./arduino-1.8.3"
+  - "./arduino-1.6.0"
 
 script: cmake . && make speed-controller.hex
