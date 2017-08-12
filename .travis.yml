@@ -3,15 +3,27 @@ sudo: false
 dist: trusty
 os:
 - linux
+
+git:
+# Handle git submodules ourselves
+    submodules: false
+before_install:
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
+
 addons:
   apt:
     packages:
     - cmake
+
 before_install:
 - "[ -e ./arduino-1.8.3/arduino ] || $(wget http://downloads.arduino.cc/arduino-1.8.3-linux64.tar.xz
   && tar xf arduino-1.8.3-linux64.tar.xz)"
 - cp env.travis.cmake env.cmake
+
 cache:
   directories:
   - "./arduino-1.8.3"
+
 script: cmake . && make speed-controller.hex
