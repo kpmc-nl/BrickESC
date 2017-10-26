@@ -9,8 +9,8 @@ Attiny841
 5: Relay
 6: PWM Output (fet) + led1
 7: Programmer MOSI + led2
-8: Programmer MISO + serial debug rx (header)
-9: Programmer SCK + serial debug tx (header) 
+8: Programmer MISO + serial debug tx (header)
+9: Programmer SCK + serial debug rx (header) 
 10: Piezo buzzer (alarm)
 11: Temperature sensor
 12: Voltage sensor

@@ -3,4 +3,10 @@
 /build/
 /cmake-build-debug
 /.idea/
-/cmake/build-env.cmake
+/env.cmake
+/.kdev4/
+**/*.kdev4
+**/*~
+**/*.ods
+
+

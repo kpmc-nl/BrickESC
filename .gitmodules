@@ -1,0 +1,4 @@
+[submodule "lib/ATTinyCore"]
+	path = lib/ATTinyCore
+	url = https://github.com/SpenceKonde/ATTinyCore.git
+    branch = v1.1.4

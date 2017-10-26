@@ -2,10 +2,7 @@
 // Created by Matthijs Oosterhoff on 25/05/16.
 //
 
-//#include <pins_arduino.h>
-#include <pins_arduino.h>
 #include "util.h"
-
 
 uint64_t median(uint64_t *input, uint64_t array_size) {
 
