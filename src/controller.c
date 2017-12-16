@@ -12,6 +12,7 @@
 
 
 static uint64_t target_pulse = RC_PWM_NEUTRAL;
+static uint64_t input_pulse = RC_PWM_NEUTRAL;
 
 
 void controller_setup() {
@@ -50,7 +51,15 @@ void controller_setup() {
 void controller_loop() {
 
 
-    target_pulse = rc_input_get_current();
+    input_pulse = rc_input_get_current();
+
+    if(input_pulse > target_pulse){
+        target_pulse++;
+    }
+    if(input_pulse < target_pulse){
+        target_pulse--;
+    }
+
 
     digitalWrite(LED1_PIN, LOW);
     digitalWrite(LED2_PIN, LOW);
@@ -67,7 +76,7 @@ void controller_loop() {
         return;
     }
 
-    analogWrite(FET_PIN, (target_pulse - get_settings().min_pulse) * 255 / (get_settings().max_pulse - get_settings().min_pulse));
+    motor_power((target_pulse - get_settings().min_pulse) * 255 / (get_settings().max_pulse - get_settings().min_pulse));
 }
 
 
