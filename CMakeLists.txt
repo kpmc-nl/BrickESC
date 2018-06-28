@@ -15,16 +15,17 @@ add_definitions(-DARDUINO_ARCH_AVR)
 include(cmake/arduino.cmake)
 include(cmake/avr-toolchain.cmake)
 
-include_directories(${ATTINY_CORE_PATH}/avr/cores/tiny)
-include_directories(${ATTINY_CORE_PATH}/avr/variants/tinyX5)
+include_directories(lib/ATTinyCore/avr/cores/tiny)
+include_directories(lib/ATTinyCore/avr/variants/tinyX5)
 
 include_directories(src)
 
 set(ARDUINO_SOURCE_FILES
-        ${ATTINY_CORE_PATH}/avr/cores/tiny/WInterrupts.c
-        ${ATTINY_CORE_PATH}/avr/cores/tiny/wiring.c
-        ${ATTINY_CORE_PATH}/avr/cores/tiny/wiring_analog.c
-        ${ATTINY_CORE_PATH}/avr/cores/tiny/wiring_digital.c
+        lib/ATTinyCore/avr/variants/tinyX5/pins_arduino.h
+        lib/ATTinyCore/avr/cores/tiny/WInterrupts.c
+        lib/ATTinyCore/avr/cores/tiny/wiring.c
+        lib/ATTinyCore/avr/cores/tiny/wiring_analog.c
+        lib/ATTinyCore/avr/cores/tiny/wiring_digital.c
         )
 
 set(SOURCE_FILES
