@@ -18,15 +18,15 @@ include(cmake/arduino.cmake)
 include(cmake/avr-toolchain.cmake)
 
 
-include_directories(lib/ATTinyCore/cores/tinymodern)
+include_directories(lib/ATTinyCore/avr/cores/tinymodern)
 include_directories(src)
 
 set(ARDUINO_SOURCE_FILES
-        lib/ATTinyCore/cores/tinymodern/pins_arduino.c
-        lib/ATTinyCore/cores/tinymodern/WInterrupts.c
-        lib/ATTinyCore/cores/tinymodern/wiring.c
-        lib/ATTinyCore/cores/tinymodern/wiring_analog.c
-        lib/ATTinyCore/cores/tinymodern/wiring_digital.c
+        lib/ATTinyCore/avr/cores/tinymodern/pins_arduino.c
+        lib/ATTinyCore/avr/cores/tinymodern/WInterrupts.c
+        lib/ATTinyCore/avr/cores/tinymodern/wiring.c
+        lib/ATTinyCore/avr/cores/tinymodern/wiring_analog.c
+        lib/ATTinyCore/avr/cores/tinymodern/wiring_digital.c
         )
 
 set(SOURCE_FILES
