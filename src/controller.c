@@ -8,15 +8,12 @@
 #include "rc.h"
 #include "util.h"
 #include "motor.h"
-#include "rc_input.h"
+#include "input.h"
 #include "settings.h"
 
-#define LOOPTIME 3000
+#define LOOPTIME 1000
 
-static uint64_t target_pulse = RC_PWM_NEUTRAL;
-static int cutoff_voltage = 0;
-static int cutoff_temperature = 40; // C // NTC B57164-K103-K
-static boolean reduce_power = false;
+static int target_pulse = RC_PWM_NEUTRAL;
 
 static unsigned long last_motor_on;
 
@@ -29,15 +26,12 @@ void controller_setup() {
 
     delay(500);
 
-    int voltage = get_battery_voltage();
-    uint8_t cell_count = 1 + (voltage / 4250);
-    cutoff_voltage = 3400 * cell_count;
 
     motor_tone(600, 200);
     motor_tone(900, 200);
     motor_tone(1200, 200);
 
-    if (rc_input_get_current() > RC_PWM_HIGH_THRESH) {
+    if (input_get_current() > RC_PWM_HIGH_THRESH) {
         /* run setup mode if controller is turned on while the signal is high */
         setup_mode();
         write_settins();
@@ -50,7 +44,7 @@ void controller_setup() {
     wait_for_neutral();
 
 
-    for (int8_t i = 1; i <= cell_count; i++) {
+    for (int8_t i = 1; i <= 2; i++) {
         delay(800);
         digitalWrite(LED1_PIN, HIGH);
         digitalWrite(LED2_PIN, HIGH);
@@ -63,26 +57,12 @@ void controller_setup() {
 
 void controller_loop() {
 
-    for (uint8_t i = 0; get_battery_voltage() < cutoff_voltage && i < 10; i++) {
-        if (i == 9) {
-            reduce_power = true;
-        }
-    }
-
-    for (uint8_t i = 0;
-         get_temperature_voltage() < ((-0.009501682077898 * cutoff_temperature + 0.98204925041399) * 5000)
-         && i < 10; i++) {
-        if (i == 9) {
-            reduce_power = true;
-//            digitalWrite(LED2_PIN, HIGH);
-        }
-    }
+    delay(20);
 
 
     delayMicroseconds(LOOPTIME);
 
-    uint64_t pulse = rc_input_get_current();
-
+    uint64_t pulse = input_get_current();
 
     if(pulse > target_pulse){
 
@@ -124,21 +104,17 @@ void controller_loop() {
         digitalWrite(LED1_PIN, LOW);
     }
 
-    uint8_t full_power = 255;
-    if (reduce_power) {
-        full_power = 64;
-    }
 
 
     if (target_pulse >= RC_PWM_HIGH_THRESH) {
         motor_forward();
-        motor_power((target_pulse - RC_PWM_HIGH_THRESH) * full_power / (get_settings().max_pulse - RC_PWM_HIGH_THRESH));
+        motor_power((target_pulse - RC_PWM_HIGH_THRESH) * 255 / (get_settings().max_pulse - RC_PWM_HIGH_THRESH));
         return;
     }
 
     if (target_pulse <= RC_PWM_LOW_THRESH) {
         motor_reverse();
-        motor_power((RC_PWM_LOW_THRESH - target_pulse) * full_power / (RC_PWM_LOW_THRESH - get_settings().min_pulse));
+        motor_power((RC_PWM_LOW_THRESH - target_pulse) * 255 / (RC_PWM_LOW_THRESH - get_settings().min_pulse));
         return;
     }
 
@@ -147,7 +123,7 @@ void controller_loop() {
 
 void wait_for_neutral() {
     /* wait for neutral input */
-    while (rc_input_get_current() > RC_PWM_HIGH_THRESH || rc_input_get_current() < RC_PWM_LOW_THRESH) {
+    while (input_get_current() > RC_PWM_HIGH_THRESH || input_get_current() < RC_PWM_LOW_THRESH) {
         delay(10);
     }
     digitalWrite(LED1_PIN, LOW);
@@ -155,12 +131,6 @@ void wait_for_neutral() {
 }
 
 
-int get_battery_voltage() {
-    /* in millivolts */
-    return map(analogRead(VOLTAGE_SENSOR), 0, 1023, 0, 21000);
-}
-
-int get_temperature_voltage() {
-    /* in millivolts */
-    return map(analogRead(TEMP_SENSOR), 0, 1023, 0, 5000);
+int rc_get_input_current() {
+    return analogRead(INPUT_ADC);
 }

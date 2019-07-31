@@ -36,7 +36,7 @@ set(SOURCE_FILES
         src/pinout.h
 
         src/motor.h src/motor.c
-        src/rc_input.c src/rc_input.h
+        src/input.c src/input.h
         src/controller.h src/controller.c
         src/util.c src/util.h
 

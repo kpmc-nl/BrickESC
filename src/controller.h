@@ -15,4 +15,6 @@ void controller_setup();
 
 void controller_loop();
 
+int get_current_input();
+
 #endif /* SC_CONTROLLER_H */

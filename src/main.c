@@ -1,7 +1,7 @@
 
 #include <Arduino.h>
 #include <avr/power.h>
-#include "rc_input.h"
+#include "input.h"
 #include "motor.h"
 #include "controller.h"
 
@@ -17,7 +17,7 @@ int main(void) {
     analogReference(EXTERNAL);
 
     /* setup components */
-    rc_input_setup();
+    input_setup();
     motor_setup();
     controller_setup();
 

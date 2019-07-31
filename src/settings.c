@@ -9,7 +9,7 @@
 #include "pinout.h"
 #include "rc.h"
 #include "motor.h"
-#include "rc_input.h"
+#include "input.h"
 
 
 static settings_t EEMEM eeprom_settings;
@@ -44,17 +44,17 @@ void setup_mode() {
     }
 
     /* read max pulse, assuming the user gives max input */
-    runtime_settings.max_pulse = rc_input_get_current() - RC_PWM_OUTER_THRESH;
+    runtime_settings.max_pulse = input_get_current() - RC_PWM_OUTER_THRESH;
     digitalWrite(LED1_PIN, HIGH);
     motor_tone(1200, 300);
 
     /* wait for low pulse */
-    while (rc_input_get_current() > RC_PWM_LOW_THRESH) {
+    while (input_get_current() > RC_PWM_LOW_THRESH) {
         delay(10);
     }
     delay(500);
     /* read low pulse, assuming the user gives min input */
-    runtime_settings.min_pulse = rc_input_get_current() + RC_PWM_OUTER_THRESH;
+    runtime_settings.min_pulse = input_get_current() + RC_PWM_OUTER_THRESH;
     digitalWrite(LED2_PIN, HIGH);
     motor_tone(1200, 300);
 
@@ -64,8 +64,8 @@ void validate_settings() {
 
     // Validate settings as much as we can. If any error is detected,
     // the leds will blink furiously, to indicate that the setup must be performed.
-    if (runtime_settings.min_pulse < 500 || runtime_settings.min_pulse > RC_PWM_LOW_THRESH ||
-        runtime_settings.max_pulse > 2500 || runtime_settings.max_pulse < RC_PWM_HIGH_THRESH ||
+    if (runtime_settings.min_pulse < 0 || runtime_settings.min_pulse > RC_PWM_LOW_THRESH ||
+        runtime_settings.max_pulse > 1024 || runtime_settings.max_pulse < RC_PWM_HIGH_THRESH ||
         runtime_settings.min_pulse > runtime_settings.max_pulse) {
         while (true) {
 

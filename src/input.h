@@ -8,8 +8,8 @@
 
 #include <stdint.h>
 
-void rc_input_setup();
+void input_setup();
 
-uint64_t rc_input_get_current();
+uint64_t input_get_current();
 
 #endif /* RC_INPUT_H */
