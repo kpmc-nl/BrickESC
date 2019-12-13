@@ -11,6 +11,10 @@
 #include "motor.h"
 #include "rc_input.h"
 
+#define RC_PWM_NEUTRAL 1500
+#define RC_PWM_LOW_THRESH 1420
+#define RC_PWM_HIGH_THRESH 1580
+
 static settings_t EEMEM eeprom_settings;
 static settings_t runtime_settings;
 
@@ -27,20 +31,9 @@ void write_settins() {
 }
 
 void setup_mode() {
-    /* inidcate that we are running the setup mode */
-
-    for (uint8_t i = 0; i < 3; i++) {
-//        digitalWrite(LED1_PIN, HIGH);
-        digitalWrite(LED2_PIN, HIGH);
-        delay(100);
-//        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, LOW);
-        delay(100);
-    }
 
     /* read max pulse, assuming the user gives max input */
     runtime_settings.max_pulse = rc_input_get_current() - RC_PWM_OUTER_THRESH;
-//    digitalWrite(LED1_PIN, HIGH);
     motor_tone(1200, 300);
 
     /* wait for low pulse */
@@ -50,7 +43,6 @@ void setup_mode() {
     delay(500);
     /* read low pulse, assuming the user gives min input */
     runtime_settings.min_pulse = rc_input_get_current() + RC_PWM_OUTER_THRESH;
-    digitalWrite(LED2_PIN, HIGH);
     motor_tone(1200, 300);
 }
 
@@ -63,12 +55,8 @@ void validate_settings() {
         runtime_settings.min_pulse > runtime_settings.max_pulse) {
         while (true) {
 
-//            digitalWrite(LED1_PIN, HIGH);
-            digitalWrite(LED2_PIN, LOW);
             motor_tone(900, 100);
             delay(100);
-            digitalWrite(LED2_PIN, HIGH);
-//            digitalWrite(LED1_PIN, LOW);
             motor_tone(900, 100);
             delay(100);
         }

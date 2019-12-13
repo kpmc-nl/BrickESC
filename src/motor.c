@@ -57,10 +57,15 @@ void motor_tone(uint64_t freq, uint64_t duration) {
     uint64_t period_usec = 1000000 / freq;
     uint64_t k = duration * 1000 / period_usec;
 
+    digitalWrite(FORWARD_PIN, HIGH);
+    digitalWrite(REVERSE_PIN, LOW);
     for (uint64_t i = 0; i < k; i++) {
-        digitalWrite(FORWARD_PIN, HIGH);
-        delayMicroseconds(1);
-        digitalWrite(FORWARD_PIN, LOW);
+        digitalWrite(ENABLE_PIN, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(ENABLE_PIN, LOW);
         delayMicroseconds(period_usec);
     }
+    digitalWrite(FORWARD_PIN, LOW);
+    digitalWrite(REVERSE_PIN, LOW);
+
 }

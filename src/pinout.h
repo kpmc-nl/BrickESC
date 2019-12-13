@@ -7,8 +7,6 @@
 
 #define RC_input_PIN    PIN_B2  //t85_PP7
 #define RC_input_INT    0       //t85_PP7
-//#define LED1_PIN      PIN_B3
-#define LED2_PIN        PIN_B4  //t85_PP3
 #define FORWARD_PIN     PIN_B0  //t85_PP5
 #define REVERSE_PIN     PIN_B3  //t85_PP2
 #define ENABLE_PIN      PIN_B1  //t85_PP6
