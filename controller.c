@@ -86,34 +86,27 @@ void controller_loop() {
     last_motor_on = millis();
   }
 
-  uint8_t full_power = 255;
-
   // if target_pulse is set for forward
   if (target_pulse >= rc_pwm_high_thresh) {
     motor_forward();
-    motor_power(() * full_power / ());
     motor_power(
         RC_PWM_MINIMUM_FORWARD_SPEED +
         ((target_pulse - rc_pwm_high_thresh) *
-        (RC_PWM_MOTOR_FORWARD_SPEED_MAX - RC_PWM_MINIMUM_FORWARD_SPEED) /
-        (get_settings().max_pulse - rc_pwm_high_thresh)));
-
+         (RC_PWM_MOTOR_FORWARD_SPEED_MAX - RC_PWM_MINIMUM_FORWARD_SPEED) /
+         (get_settings().max_pulse - rc_pwm_high_thresh)));
     return;
   }
 
   // if target_pulse is set for reverse
   if (target_pulse <= rc_pwm_low_thresh) {
     motor_reverse();
-    motor_power(() * full_power / ());
     motor_power(
         RC_PWM_MINIMUM_REVERSE_SPEED +
         ((rc_pwm_low_thresh - target_pulse) *
-        (RC_PWM_MOTOR_REVERSE_SPEED_MAX - RC_PWM_MINIMUM_REVERSE_SPEED) /
-        (rc_pwm_low_thresh - get_settings().min_pulse)));
-
+         (RC_PWM_MOTOR_REVERSE_SPEED_MAX - RC_PWM_MINIMUM_REVERSE_SPEED) /
+         (rc_pwm_low_thresh - get_settings().min_pulse)));
     return;
   }
-
 
   // if target pulse is between forward and reverse
   if ((target_pulse < rc_pwm_high_thresh) &&
