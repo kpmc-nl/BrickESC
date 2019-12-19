@@ -52,7 +52,14 @@ void controller_setup() {
 }
 
 void controller_loop() {
+  // next update: only use looptime if rampup!!
+  if ((target_pulse < rc_pwm_high_thresh) &&
+     (target_pulse > rc_pwm_low_thresh)) {
+    } else {
+        delayMicroseconds(RC_PWM_LOOPTIME_CONTROLLER_DELAY_RUNNING);
+    }
 
+  
   uint64_t pulse = rc_input_get_current();
 
   if (pulse >= target_pulse) {
