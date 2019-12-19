@@ -16,4 +16,6 @@
 #define RC_PWM_MINIMUM_REVERSE_SPEED  0    // min 0 .. max 255 (255 is switc
 #define RC_PWM_MOTOR_REVERSE_SPEED_MAX 255 // max 255
 
+#define RC_PWM_LOOPTIME_CONTROLLER_DELAY_RUNNING 1400
+
 #endif /* SC_RC_H */
